@@ -1,24 +1,20 @@
 import './App.css';
 import { createSearchJob, getData } from '@splunk/splunk-utils/search';
 import { useState, useEffect } from 'react'
+
 import SingleValue from '@splunk/visualizations/SingleValue';
 import Line from '@splunk/visualizations/Line';
-import ColumnLayout from '@splunk/react-ui/ColumnLayout';
 
 import Link from '@splunk/react-ui/Link'
 import List from '@splunk/react-ui/List'
 import P from '@splunk/react-ui/Paragraph';
 import Heading from '@splunk/react-ui/Heading';
-import { useSplunkTheme } from '@splunk/themes';
 
 function App() {
 
 
   const [lineSid, setLineSid] = useState()
-
-
   const splunkSearchLine = "search index=_internal | timechart span=10s count"
-
   const [lineSearchResultsFields, setLineSearchResultsFields] = useState()
   const [lineSearchResultsColumns, setLineSearchResultsColumns] = useState()
   const [lineSecondsToComplete, setLineSecondsToComplete] = useState()
@@ -31,7 +27,7 @@ function App() {
   const [singleValueSeondsToComplete, setSingleValueSecondsToComplete] = useState()
 
 
-  const sessionKey = "eyJraWQiOiJzcGx1bmsuc2VjcmV0IiwiYWxnIjoiSFM1MTIiLCJ2ZXIiOiJ2MiIsInR0eXAiOiJzdGF0aWMifQ.eyJpc3MiOiJhZG1pbiBmcm9tIEMwMldSMUg0SFRERCIsInN1YiI6ImFkbWluIiwiYXVkIjoiVGVzdGluZyIsImlkcCI6IlNwbHVuayIsImp0aSI6IjY4ZTcwYjA5MDljYTA3ZmI2ZDAwZTVkMTE4MTNkZDIwMDk3ZTY0ZjhlYjU2ZGFjZjJlNzcyZGFlMDlhNzc3NmIiLCJpYXQiOjE2NDAyMDc3NzgsImV4cCI6MTY0Mjc5OTc3OCwibmJyIjoxNjQwMjA3Nzc4fQ.Ru3FNEbPE_c1OSmM3NBzHHSdlu2FsXhvRppqsfLX8GsNpViPtsoGd53CUcNb_thIVcgPN29lMkAz_BhaxXRQCg"
+  const sessionKey = "<Token>"
   const splunkURL = "https://localhost:8089"
 
 
@@ -132,74 +128,75 @@ function App() {
         </List>
 
 
-<div style={{width:"100%"}}>
-  <div style={{float:"left"}}>
-              <SingleValue
-                options={{
-                  majorColor: '#008000',
-                }}
-                dataSources={{
-                  primary: {
-                    data: {
-                      columns: singleValueSearchResultsColumns,
-                      fields: singleValueSearchResultsFields
-                    },
-                    meta: {},
+        <div style={{ width: "100%" }}>
+          <div style={{ float: "left" }}>
+            <SingleValue
+              options={{
+                majorColor: '#008000',
+              }}
+              dataSources={{
+                primary: {
+                  data: {
+                    columns: singleValueSearchResultsColumns,
+                    fields: singleValueSearchResultsFields
                   },
-                }}
-              />
+                  meta: {},
+                },
+              }}
+            />
 
-              <Heading level={2}>This is a Single Value that represents the following search: </Heading>
-              <P>Search: {splunkSearchSingleValue}</P>
-              <P>
+            <Heading level={2}>This is a Single Value that represents the following search: </Heading>
+            <P>Search: {splunkSearchSingleValue}</P>
+            <P>
 
-                {"Splunk SID: " + singleValueSid}
-              </P>
-              <P>
-                {"Seconds to Complete: " + JSON.stringify(singleValueSeondsToComplete)}
-              </P>
-              <P>
-                {"Splunk Results - Fields: " + JSON.stringify(singleValueSearchResultsFields)}
-              </P>
-              <P>
-                {"Splunk Results - Columns: " + JSON.stringify(singleValueSearchResultsColumns)}
-              </P>
-      </div>
-      <div style={{float:"right", width: "50%"
-}}>
+              {"Splunk SID: " + singleValueSid}
+            </P>
+            <P>
+              {"Seconds to Complete: " + JSON.stringify(singleValueSeondsToComplete)}
+            </P>
+            <P>
+              {"Splunk Results - Fields: " + JSON.stringify(singleValueSearchResultsFields)}
+            </P>
+            <P>
+              {"Splunk Results - Columns: " + JSON.stringify(singleValueSearchResultsColumns)}
+            </P>
+          </div>
+          <div style={{
+            float: "right", width: "50%"
+          }}>
 
-            
-              <Line
-        options={{}}
-        dataSources={{
-            primary: {
-                
-                data: {
+
+            <Line
+              options={{}}
+              dataSources={{
+                primary: {
+
+                  data: {
                     fields: lineSearchResultsFields,
                     columns: lineSearchResultsColumns,
+                  },
+                  meta: {},
                 },
-                meta: {  },
-            },
-        }}
-    />
-              <Heading level={2}>This is a Line Chart that represents the following search: </Heading>
+              }}
+            />
+            <Heading level={2}>This is a Line Chart that represents the following search: </Heading>
 
-              <P>Search: {splunkSearchLine}</P>
-              <P>
+            <P>Search: {splunkSearchLine}</P>
+            <P>
 
-                {"Splunk SID: " + lineSid}
-              </P>
-              <P>
-                {"Seconds to Complete: " + JSON.stringify(lineSecondsToComplete)}
-              </P>
-              <P>
-                {"Splunk Results - Fields: " + JSON.stringify(lineSearchResultsFields)}
-              </P>
-              <P>
-                {"Splunk Results - Columns: " + JSON.stringify(lineSearchResultsColumns)}
-              </P>
-    </div>
-    </div>
+              {"Splunk SID: " + lineSid}
+            </P>
+            <P>
+              {"Seconds to Complete: " + JSON.stringify(lineSecondsToComplete)}
+            </P>
+            <P>
+              {"Splunk Results - Fields: " + JSON.stringify(lineSearchResultsFields)}
+            </P>
+            <P>
+              {"Splunk Results - Columns: " + JSON.stringify(lineSearchResultsColumns)}
+            </P>
+          </div>
+        </div>
 
       </header>
     </div>
