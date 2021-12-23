@@ -126,14 +126,15 @@ function App() {
           {"Splunk SID: " + sid}
         </p>
         <p>
-          {"Splunk Results Fields: " + JSON.stringify(searchResultsFields)}
+          {"Seconds to Complete: " + JSON.stringify(secondsToComplete)}
         </p>
         <p>
-          {"Splunk Results Columns: " + JSON.stringify(searchResultsColumns)}
+          {"Splunk Results - Fields: " + JSON.stringify(searchResultsFields)}
         </p>
         <p>
-          {"Splunk Seconds to Complete: " + JSON.stringify(secondsToComplete)}
+          {"Splunk Results - Columns: " + JSON.stringify(searchResultsColumns)}
         </p>
+       
        
 
       </header>
