@@ -12,7 +12,7 @@ function App() {
   const [secondsToComplete, setSecondsToComplete] = useState()
 
 
-  const sessionKey = "eyJraWQiOiJzcGx1bmsuc2VjcmV0IiwiYWxnIjoiSFM1MTIiLCJ2ZXIiOiJ2MiIsInR0eXAiOiJzdGF0aWMifQ.eyJpc3MiOiJhZG1pbiBmcm9tIEMwMldSMUg0SFRERCIsInN1YiI6ImFkbWluIiwiYXVkIjoiVGVzdGluZyIsImlkcCI6IlNwbHVuayIsImp0aSI6IjY4ZTcwYjA5MDljYTA3ZmI2ZDAwZTVkMTE4MTNkZDIwMDk3ZTY0ZjhlYjU2ZGFjZjJlNzcyZGFlMDlhNzc3NmIiLCJpYXQiOjE2NDAyMDc3NzgsImV4cCI6MTY0Mjc5OTc3OCwibmJyIjoxNjQwMjA3Nzc4fQ.Ru3FNEbPE_c1OSmM3NBzHHSdlu2FsXhvRppqsfLX8GsNpViPtsoGd53CUcNb_thIVcgPN29lMkAz_BhaxXRQCg"
+  const sessionKey = "<Token>"
   const splunkURL = "https://localhost:8089"
   const splunkSearch = "search index=_internal | stats count"
 
@@ -85,7 +85,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>@splunk/splunk-utils Example</p>
+        <p>@splunk/splunk-utils Example app. This app uses couple of packages available on https://splunkui.splunk.com (@splunk/splunk-utils, @splunk/visualizations)</p>
+          <p>Be mindful that you'll need to setup your own Auth Token (https://docs.splunk.com/Documentation/Splunk/8.2.3/Security/CreateAuthTokens) to use this app.  </p>
         <h4>This is Single Value that represents the following search: </h4>
         <p>{splunkSearch}</p>
       <SingleValue
