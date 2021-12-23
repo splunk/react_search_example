@@ -3,12 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@splunk/react-icons": "^3.1.0",
+    "@splunk/react-ui": "^4.4.1",
+    "@splunk/search-job": "^2.0.0",
+    "@splunk/splunk-utils": "^2.1.0",
+    "@splunk/visualization-context": "^24.0.0",
+    "@splunk/visualizations": "^24.0.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-scripts": "5.0.0",
+    "styled-components": "^5.3.3",
     "web-vitals": "^2.1.2"
   },
   "scripts": {
