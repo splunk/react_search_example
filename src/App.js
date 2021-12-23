@@ -24,7 +24,6 @@ function App() {
 
   const timer = ms => new Promise(res => setTimeout(res, ms))
 
-
   useEffect(() => {
 
     if (!sid) {
@@ -34,21 +33,10 @@ function App() {
           setSid(sidJob)
           load(sidJob)
         })
-
-
     }
-
   }, [])
 
-  /*useEffect(() => {
-    
-    if(sid){
-       fetchData();
-    }
-    
-  }, [sid])*/
-
-  async function load(sidJob) { // We need to wrap the loop into an async function for this to work
+  async function load(sidJob) { 
     var completeSeconds = 0
 
     for (var i = 0; i < 7; i++) {
@@ -60,17 +48,14 @@ function App() {
             setSecondsToComplete(completeSeconds)
           }
         })
-      console.log(completeSeconds)
       if (!completeSeconds) {
         await timer(1000);
       }
       else {
         break
-      }// then the created Promise can be awaited
+      }
     }
   }
-
-
 
   const createJob = async () => {
     const n = createSearchJob({
@@ -96,11 +81,6 @@ function App() {
       })
     return n
   };
-
-
-
-
-
 
   return (
     <div className="App">
@@ -134,9 +114,6 @@ function App() {
         <p>
           {"Splunk Results - Columns: " + JSON.stringify(searchResultsColumns)}
         </p>
-       
-       
-
       </header>
     </div>
   );
