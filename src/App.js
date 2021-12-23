@@ -105,7 +105,7 @@ function App() {
         />        
         <h3>Info about this search</h3>
         
-        <h4>This is Single Value that represents the following search: </h4>
+        <h4>This is a Single Value that represents the following search: </h4>
         <p>Search: {splunkSearch}</p><p>
           
           {"Splunk SID: " + sid}
