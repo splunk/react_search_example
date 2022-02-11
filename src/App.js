@@ -9,7 +9,7 @@ import Link from '@splunk/react-ui/Link'
 import List from '@splunk/react-ui/List'
 import P from '@splunk/react-ui/Paragraph';
 import Button from '@splunk/react-ui/Button';
-
+import WaitSpinner from '@splunk/react-ui/WaitSpinner';
 import Heading from '@splunk/react-ui/Heading';
 
 function App() {
@@ -191,7 +191,6 @@ function App() {
                 <Heading style={{overflowWrap:"break-word", margin: "10px"}} level={3}>Clicking this button will execute a post-process search: </Heading>
 
                 <Button label="Execute Post-process" appearance="primary" onClick={() => handlePostProcessClick(singleValueSid, splunkSingleValuePostProcess, setSingleValueSearchResultsFields, setSingleValueSearchResultsColumns)} />
-              </> : <></>}
               <P style={{overflowWrap:"break-word", margin: "10px"}}>
                 Search: {splunkSearchSingleValue}
                 </P>
@@ -208,7 +207,10 @@ function App() {
               <P style={{overflowWrap:"break-word", margin: "10px"}}>
                 {"Splunk Results - Columns: " + JSON.stringify(singleValueSearchResultsColumns)}
               </P>
+              </> :  <WaitSpinner size="medium" />}
+
             </div>
+
             <div style={{
               float: "right", width: "50%"
             }}>
@@ -229,11 +231,11 @@ function App() {
               />
               <Heading style={{overflowWrap:"break-word", margin: "10px"}} level={2}>This is a Line Chart that represents the following search: </Heading>
 
-              {singleValueSeondsToComplete ? <>
+              {lineSecondsToComplete ? <>
                 <Heading style={{overflowWrap:"break-word", margin: "10px"}} level={3}>Clicking this button will execute a post-process search: </Heading>
 
                 <Button label="Execute Post-process" appearance="primary" onClick={() => handlePostProcessClick(lineSid, splunkSearchLinePostProcess, setLineSearchResultsFields, setLineSearchResultsColumns)} />
-              </> : <></>}
+             
               <P style={{overflowWrap:"break-word", margin: "10px"}}>
                 Search: {splunkSearchLine}
                 </P>
@@ -250,6 +252,8 @@ function App() {
               <P style={{overflowWrap:"break-word", margin: "10px"}}>
                 {"Splunk Results - Columns: " + JSON.stringify(lineSearchResultsColumns)}
               </P>
+              </> :             <WaitSpinner size="medium" />
+}
             </div>
           </div>
         }
