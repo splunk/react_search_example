@@ -141,6 +141,7 @@ function App() {
     return n
   };
 
+  const wordBreakStyle = { overflowWrap: "break-word", margin: "10px" }
   return (
     <div className="App">
       <header className="App-header">
@@ -185,37 +186,34 @@ function App() {
                 }}
               />
 
-              <Heading style={{overflowWrap:"break-word", margin: "10px"}} level={2}>This is a Single Value that represents the following search: </Heading>
+              <Heading style={wordBreakStyle} level={2}>This is a Single Value that represents the following search: </Heading>
 
               {singleValueSeondsToComplete ? <>
-                <Heading style={{overflowWrap:"break-word", margin: "10px"}} level={3}>Clicking this button will execute a post-process search: </Heading>
+                <Heading style={wordBreakStyle} level={3}>Clicking this button will execute a post-process search: </Heading>
+                <Heading style={wordBreakStyle} level={4}>{splunkSingleValuePostProcess}</Heading>
 
                 <Button label="Execute Post-process" appearance="primary" onClick={() => handlePostProcessClick(singleValueSid, splunkSingleValuePostProcess, setSingleValueSearchResultsFields, setSingleValueSearchResultsColumns)} />
-              <P style={{overflowWrap:"break-word", margin: "10px"}}>
-                Search: {splunkSearchSingleValue}
+                <P style={wordBreakStyle}>
+                  Search: {splunkSearchSingleValue}
                 </P>
-                <P style={{overflowWrap:"break-word", margin: "10px"}}>
+                <P style={wordBreakStyle}>
 
-                {"Splunk SID: " + singleValueSid}
-              </P>
-              <P style={{overflowWrap:"break-word", margin: "10px"}}>
-                {"Seconds to Complete: " + JSON.stringify(singleValueSeondsToComplete)}
-              </P>
-              <P style={{overflowWrap:"break-word", margin: "10px"}}>
-                {"Splunk Results - Fields: " + JSON.stringify(singleValueSearchResultsFields)}
-              </P>
-              <P style={{overflowWrap:"break-word", margin: "10px"}}>
-                {"Splunk Results - Columns: " + JSON.stringify(singleValueSearchResultsColumns)}
-              </P>
-              </> :  <WaitSpinner size="medium" />}
+                  {"Splunk SID: " + singleValueSid}
+                </P>
+                <P style={wordBreakStyle}>
+                  {"Seconds to Complete: " + JSON.stringify(singleValueSeondsToComplete)}
+                </P>
+                <P style={wordBreakStyle}>
+                  {"Splunk Results - Fields: " + JSON.stringify(singleValueSearchResultsFields)}
+                </P>
+                <P style={wordBreakStyle}>
+                  {"Splunk Results - Columns: " + JSON.stringify(singleValueSearchResultsColumns)}
+                </P>
+              </> : <WaitSpinner size="medium" />}
 
             </div>
 
-            <div style={{
-              float: "right", width: "50%"
-            }}>
-
-
+            <div style={{float: "right", width: "50%"}}>
               <Line
                 options={{}}
                 dataSources={{
@@ -229,35 +227,35 @@ function App() {
                   },
                 }}
               />
-              <Heading style={{overflowWrap:"break-word", margin: "10px"}} level={2}>This is a Line Chart that represents the following search: </Heading>
+              <Heading style={wordBreakStyle} level={2}>This is a Line Chart that represents the following search: </Heading>
 
               {lineSecondsToComplete ? <>
-                <Heading style={{overflowWrap:"break-word", margin: "10px"}} level={3}>Clicking this button will execute a post-process search: </Heading>
+                <Heading style={wordBreakStyle} level={3}>Clicking this button will execute a post-process search: </Heading>
+                <Heading style={wordBreakStyle} level={4}>{splunkSearchLinePostProcess}</Heading>
 
                 <Button label="Execute Post-process" appearance="primary" onClick={() => handlePostProcessClick(lineSid, splunkSearchLinePostProcess, setLineSearchResultsFields, setLineSearchResultsColumns)} />
-             
-              <P style={{overflowWrap:"break-word", margin: "10px"}}>
-                Search: {splunkSearchLine}
-                </P>
-              <P>
 
-                {"Splunk SID: " + lineSid}
-              </P>
-              <P style={{overflowWrap:"break-word", margin: "10px"}}>
-                {"Seconds to Complete: " + JSON.stringify(lineSecondsToComplete)}
-              </P>
-              <P style={{overflowWrap:"break-word", margin: "10px"}}>
-                {"Splunk Results - Fields: " + JSON.stringify(lineSearchResultsFields)}
-              </P>
-              <P style={{overflowWrap:"break-word", margin: "10px"}}>
-                {"Splunk Results - Columns: " + JSON.stringify(lineSearchResultsColumns)}
-              </P>
-              </> :             <WaitSpinner size="medium" />
-}
+                <P style={wordBreakStyle}>
+                  Search: {splunkSearchLine}
+                </P>
+                <P>
+
+                  {"Splunk SID: " + lineSid}
+                </P>
+                <P style={wordBreakStyle}>
+                  {"Seconds to Complete: " + JSON.stringify(lineSecondsToComplete)}
+                </P>
+                <P style={wordBreakStyle}>
+                  {"Splunk Results - Fields: " + JSON.stringify(lineSearchResultsFields)}
+                </P>
+                <P style={wordBreakStyle}>
+                  {"Splunk Results - Columns: " + JSON.stringify(lineSearchResultsColumns)}
+                </P>
+              </> : <WaitSpinner size="medium" />
+              }
             </div>
           </div>
         }
-
       </header>
     </div>
   );
