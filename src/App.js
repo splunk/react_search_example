@@ -1,5 +1,8 @@
 import './App.css';
 import { createSearchJob, getData } from '@splunk/splunk-utils/search';
+import { isAvailable as splunkwebIsAvailable } from '@splunk/splunk-utils/config';
+import fetchSearchBNFs from '@splunk/react-search/utils/searchBNFs';
+
 import { useState, useEffect } from 'react'
 
 import SingleValue from '@splunk/visualizations/SingleValue';
@@ -11,6 +14,9 @@ import P from '@splunk/react-ui/Paragraph';
 import Button from '@splunk/react-ui/Button';
 import WaitSpinner from '@splunk/react-ui/WaitSpinner';
 import Heading from '@splunk/react-ui/Heading';
+import { presets, formInputTypes } from './constants';
+import SearchBar from '@splunk/react-search/components/Bar';
+
 
 function App() {
 
@@ -18,21 +24,47 @@ function App() {
   //Sid for Column Chart
   const [columnSid, setColumnSid] = useState()
   //Search for Column Chart
-  const splunkSearchColumn = "search index=_* | stats count by sourcetype | eval count=random()%200 | fields sourcetype count"
+  const [splunkSearchColumn, setSplunkSearchColumn] = useState("search index=_* | stats count by sourcetype | eval count=random()%200 | fields sourcetype count")
+  const [splunkSearchColumnEarliest, setSplunkSearchColumnEarliest] = useState('-24h')
+  const [splunkSearchColumnLatest, setSplunkSearchColumnLatest] = useState('now')
+
   const splunkSearchColumnPostProcess = "| search sourcetype=\"splunk*\" OR sourcetype=\"*scheduler*\" | sort 0 - count"
+
+  const [columnSearching, setColumnSearching] = useState(false)
+
   //Fields for Column Chart
   const [columnSearchResultsFields, setColumnSearchResultsFields] = useState()
   //Columns for Column Chart
   const [columnSearchResultsColumns, setColumnSearchResultsColumns] = useState()
   //Seconds to Complete for Column Chart
   const [columnSecondsToComplete, setColumnSecondsToComplete] = useState()
+  const [columnSearchOptions, setColumnSearchOptions] = useState({
+    earliest: splunkSearchColumnEarliest,
+    latest: splunkSearchColumnLatest,
+    search: splunkSearchColumn,
+    timePickerPresets: presets,
+    timePickerFormInputTypes: formInputTypes,
+    timePickerAdvancedInputTypes: [],
+  })
+  const [columnSearchObj, setColumnSearchObj] = useState({
+    search: '',
+    earliest: '',
+    latest: ''
+  })
+
 
 
   //Sid for Single Value
   const [singleValueSid, setSingleValueSid] = useState()
   //Search for Single Value
-  const splunkSearchSingleValue = "search index=_internal | stats count by sourcetype"
+  const [splunkSearchSingleValue, setSplunkSearchSingleValue] = useState("search index=_internal | stats count by sourcetype")
+  const [splunkSearchSingleValueEarliest, setSplunkSearchSingleValueEarliest] = useState('-24h')
+  const [splunkSearchSingleValueLatest, setSplunkSearchSingleValueLatest] = useState('now')
+
   const splunkSingleValuePostProcess = "| search sourcetype=\"splunkd\""
+
+  const [singleValueSearching, setSingleValueSearching] = useState(false)
+
   //Fields for Single Value
   const [singleValueSearchResultsFields, setSingleValueSearchResultsFields] = useState()
   //Columns for Single Value
@@ -40,8 +72,24 @@ function App() {
   //Seconds to Complete for Single Value
   const [singleValueSeondsToComplete, setSingleValueSecondsToComplete] = useState()
 
+  const [singleValueSearchOptions, setSingleValueSearchOptions] = useState({
+    earliest: splunkSearchSingleValueEarliest,
+    latest: splunkSearchSingleValueLatest,
+    search: splunkSearchSingleValue,
+    timePickerPresets: presets,
+    timePickerFormInputTypes: formInputTypes,
+    timePickerAdvancedInputTypes: [],
+  })
+  const [singleValueSearchObj, setSingleValueSearchObj] = useState({
+    search: '',
+    earliest: '',
+    latest: ''
+  })
+
+
+
   //Session Key for Authorization
-  const sessionKey = "<Token>"
+  const sessionKey = "eyJraWQiOiJzcGx1bmsuc2VjcmV0IiwiYWxnIjoiSFM1MTIiLCJ2ZXIiOiJ2MiIsInR0eXAiOiJzdGF0aWMifQ.eyJpc3MiOiJhZG1pbiBmcm9tIEMwMldSMUg0SFRERCIsInN1YiI6ImFkbWluIiwiYXVkIjoidGVzdGluZyBzdWkiLCJpZHAiOiJTcGx1bmsiLCJqdGkiOiI5ZmUxMWYzZWMzODljYmU5NWJkNmE0NjY2YWYwMjhiNGRjMGM5NTQxNjdiYjg1ZGFlOTY4MmVlZTMzMWQ2YTQ1IiwiaWF0IjoxNjQ0ODQ4MTIyLCJleHAiOjE2NjA0MDAxMjIsIm5iciI6MTY0NDg0ODEyMn0.BTC-XYrdFnn5_t3RKWtDCrTgKe4D3XHVQ7gWtboOUGBMWJGGmvt5u0m5lNr61puBdtjFUprfVn6NLohZfvxpyA"
   //URL for Authorization
   const splunkURL = "https://localhost:8089"
   //Headers for Authorization
@@ -51,33 +99,15 @@ function App() {
     }
   }
 
-
-
   //Timer for Search length
   const timer = ms => new Promise(res => setTimeout(res, ms))
 
   useEffect(() => {
 
-    if (!singleValueSid) {
-      createJob(splunkSearchSingleValue)
-        .then(data => data)
-        .then(sidJob => {
-          setSingleValueSid(sidJob)
-          load(sidJob, setSingleValueSecondsToComplete, setSingleValueSearchResultsFields, setSingleValueSearchResultsColumns)
-        })
-    }
 
-    if (!columnSid) {
-      createJob(splunkSearchColumn)
-        .then(data => data)
-        .then(sidJob => {
-          setColumnSid(sidJob)
-          load(sidJob, setColumnSecondsToComplete, setColumnSearchResultsFields, setColumnSearchResultsColumns)
-        })
-    }
   }, [])
 
-  async function load(sidJob, completeFunc, fieldsFunc, columnsFunc) {
+  async function load(sidJob, completeFunc, fieldsFunc, columnsFunc, setSearchingBool) {
     var completeSeconds = 0
 
     for (var i = 0; i < 30; i++) {
@@ -86,6 +116,7 @@ function App() {
         .then(sidJob => {
           if (sidJob) {
             completeSeconds = completeSeconds + 1
+            setSearchingBool(false)
             completeFunc(completeSeconds)
           }
         })
@@ -102,11 +133,12 @@ function App() {
     postProcess(locaPostProcessSid, postProcessSearch, setFields, setColumns)
   }
 
-  const createJob = async (search) => {
+  const createJob = async (search, earliest, latest) => {
+    console.log(search)
     const n = createSearchJob({
       search: search,
-      earliest_time: '-24h',
-      latest_time: '-1h',
+      earliest_time: earliest,
+      latest_time: latest,
     }, {}, { splunkdPath: splunkURL, app: "search", owner: "admin" }, headers)
       .then(response => response)
       .then(data => data.sid
@@ -140,6 +172,41 @@ function App() {
     return n
   };
 
+  const handleOptionsChange = async (option, setSearchOptions, searchOptions) => {
+    console.log(searchOptions)
+    setSearchOptions(
+      {...searchOptions,
+       ...option})
+  };
+
+  /**
+   * Invoked when the user hits enter or click on the search button
+   */
+  const handleEventTrigger = async (eventType, Sid, setSidFunc, setSearchObjFunction, searchObj, setSecondsToComplete, setSearchResultsFields, setSearchResultsColumns, setSearchingBool, setOptionsFunc, searchOptions) => {
+    setSearchObjFunction({
+      search: searchOptions.search,
+      earliest: searchOptions.earliest,
+      latest: searchOptions.latest
+    })
+    switch (eventType) {
+      case 'submit':
+          setSearchingBool(true)
+          createJob(searchOptions.search, searchOptions.earliest, searchOptions.latest)
+            .then(data => data)
+            .then(sidJob => {
+              setSidFunc(sidJob)
+              load(sidJob, setSecondsToComplete, setSearchResultsFields, setSearchResultsColumns, setSearchingBool)
+            })
+        
+        break;
+      case 'escape':
+        this.handleOptionsChange({ search: '' }, setOptionsFunc, searchOptions);
+        break;
+      default:
+        break;
+    }
+  };
+
   const wordBreakStyle = { overflowWrap: "break-word", margin: "10px" }
   return (
     <div className="App">
@@ -163,7 +230,6 @@ function App() {
           <List.Item>You'll need to configure CORS on your Splunk Environment. Instructions can be found <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">here</Link></List.Item>
         </List>
 
-
         {sessionKey == "<Token>" ? <Heading level={1}>Please set your authorization token</Heading> :
 
           <div style={{ width: "100%" }}>
@@ -185,16 +251,22 @@ function App() {
                 }}
               />
 
-              <Heading style={wordBreakStyle} level={4}>This is a Single Value that is populated by the following search: </Heading>
-              <Heading style={wordBreakStyle} level={5}>&nbsp;&nbsp;&nbsp;&nbsp;{splunkSearchSingleValue}</Heading>
+              <Heading style={wordBreakStyle} level={3}>This is a Single Value that is populated by the following search: </Heading>
+              <SearchBar
+                options={singleValueSearchOptions}
+                onOptionsChange={(options) => handleOptionsChange(options, setSingleValueSearchOptions, singleValueSearchOptions)}
+                onEventTrigger={(eventType) => handleEventTrigger(eventType, singleValueSid, setSingleValueSid, setSingleValueSearchObj, singleValueSearchObj, setSingleValueSecondsToComplete, setSingleValueSearchResultsFields, setSingleValueSearchResultsColumns, setSingleValueSearching, setSingleValueSearchOptions, singleValueSearchOptions)}
+              />
+
+              {singleValueSearching ? <WaitSpinner size="medium" /> : <></>}
 
               {singleValueSeondsToComplete ? <>
-                <Heading style={wordBreakStyle} level={4}>Clicking this button will execute the following post-process search: </Heading>
-                <Heading style={wordBreakStyle} level={5}>&nbsp;&nbsp;&nbsp;&nbsp;{splunkSingleValuePostProcess}</Heading>
+                <Heading style={wordBreakStyle} level={3}>Clicking this button will execute the following post-process search: </Heading>
+                <Heading style={wordBreakStyle} level={4}>&nbsp;&nbsp;&nbsp;&nbsp;{splunkSingleValuePostProcess}</Heading>
 
                 <Button label="Execute Post-process" appearance="primary" onClick={() => handlePostProcessClick(singleValueSid, splunkSingleValuePostProcess, setSingleValueSearchResultsFields, setSingleValueSearchResultsColumns)} />
                 <P style={wordBreakStyle}>
-                  Search: {splunkSearchSingleValue}
+                  Search: {singleValueSearchOptions.search}
                 </P>
                 <P style={wordBreakStyle}>
 
@@ -209,11 +281,11 @@ function App() {
                 <P style={wordBreakStyle}>
                   {"Splunk Results - Columns: " + JSON.stringify(singleValueSearchResultsColumns)}
                 </P>
-              </> : <WaitSpinner size="medium" />}
+              </> : <></>}
 
             </div>
 
-            <div style={{float: "right", width: "50%"}}>
+            <div style={{ float: "right", width: "50%" }}>
               <Column
                 options={{}}
                 dataSources={{
@@ -227,17 +299,23 @@ function App() {
                   },
                 }}
               />
-              <Heading style={wordBreakStyle} level={4}>This is a Column Chart that is populated by the following search: </Heading>
-              <Heading style={wordBreakStyle} level={5}>&nbsp;&nbsp;&nbsp;&nbsp;{splunkSearchColumn}</Heading>
+              <Heading style={wordBreakStyle} level={3}>This is a Column Chart that is populated by the following search: </Heading>
+              <SearchBar
+                options={columnSearchOptions}
+                onOptionsChange={(options) => handleOptionsChange(options, setColumnSearchOptions, columnSearchOptions)}
+                onEventTrigger={(eventType) => handleEventTrigger(eventType, columnSid, setColumnSid, setColumnSearchObj, columnSearchObj, setColumnSecondsToComplete, setColumnSearchResultsFields, setColumnSearchResultsColumns, setColumnSearching, setColumnSearchOptions, columnSearchOptions)}
+              />
+
+              {columnSearching ? <WaitSpinner size="medium" /> : <></>}
 
               {columnSecondsToComplete ? <>
-                <Heading style={wordBreakStyle} level={4}>Clicking this button will execute the following post-process search: </Heading>
-                <Heading style={wordBreakStyle} level={5}>&nbsp;&nbsp;&nbsp;&nbsp;{splunkSearchColumnPostProcess}</Heading>
+                <Heading style={wordBreakStyle} level={3}>Clicking this button will execute the following post-process search: </Heading>
+                <Heading style={wordBreakStyle} level={4}>&nbsp;&nbsp;&nbsp;&nbsp;{splunkSearchColumnPostProcess}</Heading>
 
                 <Button label="Execute Post-process" appearance="primary" onClick={() => handlePostProcessClick(columnSid, splunkSearchColumnPostProcess, setColumnSearchResultsFields, setColumnSearchResultsColumns)} />
 
                 <P style={wordBreakStyle}>
-                  Search: {splunkSearchColumn}
+                  Search: {columnSearchOptions.search}
                 </P>
                 <P>
 
@@ -252,7 +330,7 @@ function App() {
                 <P style={wordBreakStyle}>
                   {"Splunk Results - Columns: " + JSON.stringify(columnSearchResultsColumns)}
                 </P>
-              </> : <WaitSpinner size="medium" />
+              </> : <></>
               }
             </div>
           </div>
