@@ -18,8 +18,8 @@ import { presets, formInputTypes } from './constants';
 import SearchBar from '@splunk/react-search/components/Bar';
 import Input from '@splunk/react-search/components/Input';
 
-async function GetSessionKey(username, password) {
-  var key = await fetch('https://localhost:8089/services/auth/login', {
+async function GetSessionKey(username, password, server) {
+  var key = await fetch('https://'+server+':8089/services/auth/login', {
     method: 'POST',
     body: new URLSearchParams({
       'username': username,
@@ -45,6 +45,8 @@ function App() {
   const [sessionKey, setSessionKey] = useState("<Token>")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [serverURL, setServerURL] = useState("localhost")
+
 
   /* Second Visualization Variables */
   //Sid for Column Chart
@@ -125,7 +127,7 @@ function App() {
 
   //Session Key for Authorization
   //URL for Authorization
-  const splunkURL = "https://localhost:8089"
+  const splunkURL = "https://"+serverURL+":8089"
   //Headers for Authorization
   const headers = {
     headers: {
@@ -243,6 +245,10 @@ function App() {
     }
   };
 
+  const handleServerChange = (e, { value }) => {
+    setServerURL(value)
+  };
+
   const handleUsernameChange = (e, { value }) => {
     setUsername(value)
   };
@@ -253,7 +259,7 @@ function App() {
 
   function handleLoginButton() {
 
-    GetSessionKey(username, password)
+    GetSessionKey(username, password, serverURL)
       .then(response => response)
       .then(data => {
         setSessionKey(data['sessionKey'])
@@ -275,19 +281,29 @@ function App() {
           <List.Item><Link to="https://www.npmjs.com/package/@splunk/react-ui">@splunk/react-ui</Link></List.Item>
           <ul><li><Link to="https://splunkui.splunkeng.com/Packages/react-ui">Documentation</Link></li></ul>
         </List>
-        {sessionKey == "<Token>" ?<>
-        <Heading level={2}>Setup Instructions</Heading>
-        <P>Note: You may need to complete a step for this app to work with your Splunk Environment. Details below:</P>
-        <List>
-          <List.Item>You'll need to configure CORS on your Splunk Environment. Instructions can be found <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">here</Link></List.Item>
-        </List></>: <></>}
+        {sessionKey == "<Token>" ? <>
+          <Heading level={2}>Setup Instructions</Heading>
+          <P>Note: You may need to complete a step for this app to work with your Splunk Environment. Details below:</P>
+          <List>
+            <List.Item>You'll need to configure CORS on your Splunk Environment. Instructions can be found <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">here</Link></List.Item>
+          </List></> : <></>}
 
         {sessionKey == "<Token>" ?
           <>
             <Heading level={1}>Please login to Splunk</Heading>
-            <Heading level={2}>Username:</Heading>
 
             <form>
+
+              <Heading level={2}>Splunk Server:</Heading>
+
+              <Text
+
+                type="server"
+                value={serverURL}
+                onChange={handleServerChange}
+              />
+              <Heading level={2}>Username:</Heading>
+
               <Text
 
                 type="username"
