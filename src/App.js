@@ -174,7 +174,7 @@ function App() {
       search: search,
       earliest_time: earliest,
       latest_time: latest,
-    }, {}, { splunkdPath: splunkURL, app: "search", owner: "admin" }, headers)
+    }, {}, { splunkdPath: splunkURL, app: "search", owner: username }, headers)
       .then(response => response)
       .then(data => data.sid
       )
@@ -182,7 +182,7 @@ function App() {
   };
 
   const fetchData = async (sidJob, fieldsFunc, columnsFunc) => {
-    const n = await getData(sidJob, "results", { output_mode: "json_cols" }, { splunkdPath: splunkURL, app: "search", owner: "admin" }, headers)
+    const n = await getData(sidJob, "results", { output_mode: "json_cols" }, { splunkdPath: splunkURL, app: "search", owner: username }, headers)
       .then(response => response)
       .then(data => {
         if (data) {
@@ -195,7 +195,7 @@ function App() {
   };
 
   const postProcess = async (sidJob, postProcess, fieldsFunc, columnsFunc) => {
-    const n = await getData(sidJob, "results", { output_mode: "json_cols", "search": postProcess }, { splunkdPath: splunkURL, app: "search", owner: "admin" }, headers)
+    const n = await getData(sidJob, "results", { output_mode: "json_cols", "search": postProcess }, { splunkdPath: splunkURL, app: "search", owner: username }, headers)
       .then(response => response)
       .then(data => {
         if (data) {
