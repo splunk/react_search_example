@@ -275,12 +275,12 @@ function App() {
           <List.Item><Link to="https://www.npmjs.com/package/@splunk/react-ui">@splunk/react-ui</Link></List.Item>
           <ul><li><Link to="https://splunkui.splunkeng.com/Packages/react-ui">Documentation</Link></li></ul>
         </List>
+        {sessionKey == "<Token>" ?<>
         <Heading level={2}>Setup Instructions</Heading>
-        <P>You'll need to complete a couple of setup steps for this app to work with your Splunk Environment.</P>
+        <P>Note: You may need to complete a step for this app to work with your Splunk Environment. Details below:</P>
         <List>
-          <List.Item>Setup your own Authentication Token to use inside of this app. Replace that token you create with the sessionKey inside of this file. Instructions can be found <Link to="https://docs.splunk.com/Documentation/Splunk/8.2.3/Security/CreateAuthTokens">here</Link></List.Item>
           <List.Item>You'll need to configure CORS on your Splunk Environment. Instructions can be found <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">here</Link></List.Item>
-        </List>
+        </List></>: <></>}
 
         {sessionKey == "<Token>" ?
           <>
