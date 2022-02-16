@@ -10,14 +10,41 @@ import Link from '@splunk/react-ui/Link'
 import List from '@splunk/react-ui/List'
 import P from '@splunk/react-ui/Paragraph';
 import Button from '@splunk/react-ui/Button';
+import Text from '@splunk/react-ui/Text';
+
 import WaitSpinner from '@splunk/react-ui/WaitSpinner';
 import Heading from '@splunk/react-ui/Heading';
 import { presets, formInputTypes } from './constants';
 import SearchBar from '@splunk/react-search/components/Bar';
 import Input from '@splunk/react-search/components/Input';
 
+async function GetSessionKey(username, password) {
+  var key = await fetch('https://localhost:8089/services/auth/login', {
+    method: 'POST',
+    body: new URLSearchParams({
+      'username': username,
+      'password': password,
+      'output_mode': 'json'
+    }),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      return data['sessionKey']
+    })
+
+  return { 'sessionKey': key }
+
+}
 
 function App() {
+
+
+  const [sessionKey, setSessionKey] = useState("<Token>")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
 
   /* Second Visualization Variables */
   //Sid for Column Chart
@@ -54,7 +81,7 @@ function App() {
   const columnPostProcessBar = <Input
     value={splunkSearchColumnPostProcess}
     onChange={(e, value) => handlePostProcessChange(e, value, setSplunkSearchColumnPostProcess)}
-    onEnter={() => handleEventTrigger(columnSid, splunkSearchColumnPostProcess, setColumnSearchResultsFields,setColumnSearchResultsColumns )}
+    onEnter={() => handleEventTrigger(columnSid, splunkSearchColumnPostProcess, setColumnSearchResultsFields, setColumnSearchResultsColumns)}
   />
 
   //Sid for Single Value
@@ -91,11 +118,12 @@ function App() {
   const singleValuePostProcessBar = <Input
     value={splunkSearchSingleValuePostProcess}
     onChange={(e, value) => handlePostProcessChange(e, value, setSplunkSearchSingleValuePostProcess)}
-    onEnter={() => handleEventTrigger(singleValueSid, splunkSearchSingleValuePostProcess, setSingleValueSearchResultsFields,setSingleValueSearchResultsColumns )}
+    onEnter={() => handleEventTrigger(singleValueSid, splunkSearchSingleValuePostProcess, setSingleValueSearchResultsFields, setSingleValueSearchResultsColumns)}
   />
 
+
+
   //Session Key for Authorization
-  const sessionKey = "<Token>"
   //URL for Authorization
   const splunkURL = "https://localhost:8089"
   //Headers for Authorization
@@ -142,7 +170,6 @@ function App() {
   }
 
   const createJob = async (search, earliest, latest) => {
-    console.log(search)
     const n = createSearchJob({
       search: search,
       earliest_time: earliest,
@@ -181,7 +208,6 @@ function App() {
   };
 
   const handleOptionsChange = async (option, setSearchOptions, searchOptions) => {
-    console.log(searchOptions)
     setSearchOptions(
       {
         ...searchOptions,
@@ -217,6 +243,23 @@ function App() {
     }
   };
 
+  const handleUsernameChange = (e, { value }) => {
+    setUsername(value)
+  };
+
+  const handlePasswordChange = (e, { value }) => {
+    setPassword(value)
+  };
+
+  function handleLoginButton() {
+
+    GetSessionKey(username, password)
+      .then(response => response)
+      .then(data => {
+        setSessionKey(data['sessionKey'])
+      })
+  }
+
   const wordBreakStyle = { overflowWrap: "break-word", margin: "10px" }
   return (
     <div className="App">
@@ -239,7 +282,32 @@ function App() {
           <List.Item>You'll need to configure CORS on your Splunk Environment. Instructions can be found <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">here</Link></List.Item>
         </List>
 
-        {sessionKey == "<Token>" ? <Heading level={1}>Please set your authorization token</Heading> :
+        {sessionKey == "<Token>" ?
+          <>
+            <Heading level={1}>Please login to Splunk</Heading>
+            <Heading level={2}>Username:</Heading>
+
+            <form>
+              <Text
+
+                type="username"
+                value={username}
+                onChange={handleUsernameChange}
+              />
+              <Heading level={2}>Password:</Heading>
+
+              <Text
+
+
+                type="password"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+              <br />
+              <Button label="Login" appearance="primary" onClick={() => handleLoginButton()} />
+            </form>
+
+          </> :
 
           <div style={{ width: "100%" }}>
             <div style={{ float: "left", width: "47%", padding: "10px" }}>
@@ -257,21 +325,21 @@ function App() {
 
               {singleValueSeondsToComplete ? <>
                 <SingleValue
-                options={{
-                  majorColor: '#008000',
-                  sparklineDisplay: "off",
-                  trendDisplay: "off"
-                }}
-                dataSources={{
-                  primary: {
-                    data: {
-                      columns: singleValueSearchResultsColumns,
-                      fields: singleValueSearchResultsFields
+                  options={{
+                    majorColor: '#008000',
+                    sparklineDisplay: "off",
+                    trendDisplay: "off"
+                  }}
+                  dataSources={{
+                    primary: {
+                      data: {
+                        columns: singleValueSearchResultsColumns,
+                        fields: singleValueSearchResultsFields
+                      },
+                      meta: {},
                     },
-                    meta: {},
-                  },
-                }}
-              />
+                  }}
+                />
 
                 <Heading style={wordBreakStyle} level={3}>Clicking this button will execute the following post-process search: </Heading>
 
@@ -312,18 +380,18 @@ function App() {
 
               {columnSecondsToComplete ? <>
                 <Column
-                options={{}}
-                dataSources={{
-                  primary: {
+                  options={{}}
+                  dataSources={{
+                    primary: {
 
-                    data: {
-                      fields: columnSearchResultsFields,
-                      columns: columnSearchResultsColumns,
+                      data: {
+                        fields: columnSearchResultsFields,
+                        columns: columnSearchResultsColumns,
+                      },
+                      meta: {},
                     },
-                    meta: {},
-                  },
-                }}
-              />
+                  }}
+                />
 
                 <Heading style={wordBreakStyle} level={3}>Clicking this button will execute the following post-process search: </Heading>
 
