@@ -1,22 +1,32 @@
 import './App.css';
-import { createSearchJob, getData } from '@splunk/splunk-utils/search';
+import { useState, useEffect, useCallback } from 'react';
+import { presets, formInputTypes } from './constants';
 
-import { useState, useEffect } from 'react';
-
+//@splunk/visualizations imports
+//These are visualizations we are using for this demo
 import SingleValue from '@splunk/visualizations/SingleValue';
 import Column from '@splunk/visualizations/Column';
 
+//@splunk/react-ui imports.
+//These are what give us components that look and feel like Splunk.
 import Link from '@splunk/react-ui/Link';
 import List from '@splunk/react-ui/List';
 import P from '@splunk/react-ui/Paragraph';
 import Button from '@splunk/react-ui/Button';
-
 import WaitSpinner from '@splunk/react-ui/WaitSpinner';
 import Heading from '@splunk/react-ui/Heading';
-import { presets, formInputTypes } from './constants';
+import Switch from '@splunk/react-ui/Switch';
+
+//@splunk/react-search imports.
+//These are what give us a search bar and time picker
 import SearchBar from '@splunk/react-search/components/Bar';
 import Input from '@splunk/react-search/components/Input';
 
+//@splunk/splunk-utils imports.
+//This is what is used to create search jobs
+import { createSearchJob, getData } from '@splunk/splunk-utils/search';
+
+//Custom Components
 import LoginComponent from './components/LoginComponent';
 
 function App() {
@@ -63,26 +73,52 @@ function App() {
         earliest: '',
         latest: '',
     });
+    const [columnAppendPostProcess, setColumnAppendPostProcess] = useState(false);
 
     /* Second Visualization Post Process Variables */
     const [splunkSearchColumnPostProcess, setSplunkSearchColumnPostProcess] = useState(
         '| search sourcetype="splunk*" OR sourcetype="*scheduler*" | sort 0 - count'
     );
+
+    const handleColumnAppendPostProcessClick = useCallback(() => {
+        setColumnAppendPostProcess((current) => !current);
+    }, []);
+
     const columnPostProcessBar = (
-        <Input
-            value={splunkSearchColumnPostProcess}
-            onChange={(e, value) =>
-                handlePostProcessChange(e, value, setSplunkSearchColumnPostProcess)
-            }
-            onEnter={() =>
-                handleEventTrigger(
-                    columnSid,
-                    splunkSearchColumnPostProcess,
-                    setColumnSearchResultsFields,
-                    setColumnSearchResultsColumns
-                )
-            }
-        />
+        <>
+            <div>
+                <div style={{ float: 'left' }}>
+                    <Switch
+                        value={false}
+                        onClick={handleColumnAppendPostProcessClick}
+                        selected={columnAppendPostProcess}
+                        appearance="toggle"
+                        error={!columnAppendPostProcess}
+                    ></Switch>
+                </div>
+                <div>
+                    <Heading level={4} style={{ paddingLeft: '40px', paddingTop: '10px' }}>
+                        {columnAppendPostProcess
+                            ? '     Append Visualization'
+                            : '     Update Existing'}
+                    </Heading>
+                </div>
+            </div>
+            <Input
+                value={splunkSearchColumnPostProcess}
+                onChange={(e, value) =>
+                    handlePostProcessChange(e, value, setSplunkSearchColumnPostProcess)
+                }
+                onEnter={() =>
+                    handleEventTrigger(
+                        columnSid,
+                        splunkSearchColumnPostProcess,
+                        setColumnSearchResultsFields,
+                        setColumnSearchResultsColumns
+                    )
+                }
+            />
+        </>
     );
 
     //Sid for Single Value
@@ -116,25 +152,55 @@ function App() {
         earliest: '',
         latest: '',
     });
+    const [singleValueAppendPostProcess, setSingleValueAppendPostProcess] = useState(false);
 
     const [splunkSearchSingleValuePostProcess, setSplunkSearchSingleValuePostProcess] = useState(
         '| search sourcetype="splunkd"'
     );
+
+    const handleSingleValueAppendPostProcessClick = () => {
+        console.log(!singleValueAppendPostProcess);
+        setSingleValueAppendPostProcess(!singleValueAppendPostProcess);
+    };
+
     const singleValuePostProcessBar = (
-        <Input
-            value={splunkSearchSingleValuePostProcess}
-            onChange={(e, value) =>
-                handlePostProcessChange(e, value, setSplunkSearchSingleValuePostProcess)
-            }
-            onEnter={() =>
-                handleEventTrigger(
-                    singleValueSid,
-                    splunkSearchSingleValuePostProcess,
-                    setSingleValueSearchResultsFields,
-                    setSingleValueSearchResultsColumns
-                )
-            }
-        />
+        <>
+            <div>
+                <div style={{ float: 'left' }}>
+                    <Switch
+                        onClick={handleSingleValueAppendPostProcessClick}
+                        selected={singleValueAppendPostProcess}
+                        appearance="toggle"
+                        error={!singleValueAppendPostProcess}
+                        selectedLabel="Append Visualization"
+                        unselectedLabel="Update Existing Visualization"
+                    ></Switch>
+                </div>
+
+                <div>
+                    <Heading level={4} style={{ paddingLeft: '40px', paddingTop: '10px' }}>
+                        {singleValueAppendPostProcess
+                            ? '     Append Visualization'
+                            : '     Update Existing'}
+                    </Heading>
+                </div>
+            </div>
+
+            <Input
+                value={splunkSearchSingleValuePostProcess}
+                onChange={(e, value) =>
+                    handlePostProcessChange(e, value, setSplunkSearchSingleValuePostProcess)
+                }
+                onEnter={() =>
+                    handleEventTrigger(
+                        singleValueSid,
+                        splunkSearchSingleValuePostProcess,
+                        setSingleValueSearchResultsFields,
+                        setSingleValueSearchResultsColumns
+                    )
+                }
+            />
+        </>
     );
 
     //Timer for Search length
