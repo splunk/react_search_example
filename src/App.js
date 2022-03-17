@@ -277,10 +277,6 @@ function App() {
                 if (data) {
                     fieldsFunc(data.fields);
                     columnsFunc(data.columns);
-                    console.log(data.fields);
-                    console.log(data.columns);
-
-                    console.log(type);
                     if (type == 'SingleValue') {
                         setSingleValueViz([
                             <SingleValue
@@ -336,10 +332,6 @@ function App() {
                 if (data) {
                     fieldsFunc(data.fields);
                     columnsFunc(data.columns);
-
-                    console.log(singleValueSearchResultsColumns);
-                    console.log(singleValueSearchResultsFields);
-
                     if (appendBool) {
                         if (type == 'SingleValue') {
                             setSingleValueViz([
