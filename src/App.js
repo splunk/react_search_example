@@ -31,10 +31,13 @@ import LoginComponent from './components/LoginComponent';
 
 function App() {
     //State variables for communication with Splunkd
+
+    const queryParams = new URLSearchParams(window.location.search);
+
     const [sessionKey, setSessionKey] = useState('<Token>');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [serverURL, setServerURL] = useState('https://localhost:8089');
+    const [username, setUsername] = useState(queryParams.get('username'));
+    const [password, setPassword] = useState(queryParams.get('password'));
+    const [serverURL, setServerURL] = useState(queryParams.get('serverURL'));
 
     const headers = {
         headers: {
@@ -74,8 +77,10 @@ function App() {
         latest: '',
     });
     const [columnAppendPostProcess, setColumnAppendPostProcess] = useState(false);
+    const [columnViz, setColumnViz] = useState([]);
 
     /* Second Visualization Post Process Variables */
+
     const [splunkSearchColumnPostProcess, setSplunkSearchColumnPostProcess] = useState(
         '| search sourcetype="splunk*" OR sourcetype="*scheduler*" | sort 0 - count'
     );
@@ -154,12 +159,13 @@ function App() {
     });
     const [singleValueAppendPostProcess, setSingleValueAppendPostProcess] = useState(false);
 
+    const [singleValueViz, setSingleValueViz] = useState([]);
+
     const [splunkSearchSingleValuePostProcess, setSplunkSearchSingleValuePostProcess] = useState(
         '| search sourcetype="splunkd"'
     );
 
     const handleSingleValueAppendPostProcessClick = () => {
-        console.log(!singleValueAppendPostProcess);
         setSingleValueAppendPostProcess(!singleValueAppendPostProcess);
     };
 
@@ -205,10 +211,10 @@ function App() {
 
     //Timer for Search length
     const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-    async function load(sidJob, completeFunc, fieldsFunc, columnsFunc, setSearchingBool) {
+    async function load(sidJob, completeFunc, fieldsFunc, columnsFunc, setSearchingBool, type) {
         var completeSeconds = 0;
         for (var i = 0; i < 30; i++) {
-            fetchData(sidJob, fieldsFunc, columnsFunc)
+            fetchData(sidJob, fieldsFunc, columnsFunc, type)
                 .then((data) => data)
                 .then((sidJob) => {
                     if (sidJob) {
@@ -226,8 +232,15 @@ function App() {
     }
 
     //Function for Clicking the Post Process Search Button
-    function handlePostProcessClick(locaPostProcessSid, postProcessSearch, setFields, setColumns) {
-        postProcess(locaPostProcessSid, postProcessSearch, setFields, setColumns);
+    async function handlePostProcessClick(
+        locaPostProcessSid,
+        postProcessSearch,
+        setFields,
+        setColumns,
+        appendBool,
+        type
+    ) {
+        postProcess(locaPostProcessSid, postProcessSearch, setFields, setColumns, appendBool, type);
     }
 
     //Function for Updating the Post Process Search
@@ -236,7 +249,6 @@ function App() {
     }
 
     const createJob = async (search, earliest, latest) => {
-        console.log(sessionKey);
         const n = createSearchJob(
             {
                 search: search,
@@ -252,7 +264,7 @@ function App() {
         return n;
     };
 
-    const fetchData = async (sidJob, fieldsFunc, columnsFunc) => {
+    const fetchData = async (sidJob, fieldsFunc, columnsFunc, type) => {
         const n = await getData(
             sidJob,
             'results',
@@ -265,13 +277,53 @@ function App() {
                 if (data) {
                     fieldsFunc(data.fields);
                     columnsFunc(data.columns);
+                    console.log(data.fields);
+                    console.log(data.columns);
+
+                    console.log(type);
+                    if (type == 'SingleValue') {
+                        setSingleValueViz([
+                            <SingleValue
+                                options={{
+                                    majorColor: '#008000',
+                                    sparklineDisplay: 'off',
+                                    trendDisplay: 'off',
+                                }}
+                                dataSources={{
+                                    primary: {
+                                        data: {
+                                            fields: data.fields,
+                                            columns: data.columns,
+                                        },
+                                        meta: {},
+                                    },
+                                }}
+                            />,
+                        ]);
+                    }
+                    if (type == 'Column') {
+                        setColumnViz([
+                            <Column
+                                options={{}}
+                                dataSources={{
+                                    primary: {
+                                        data: {
+                                            fields: data.fields,
+                                            columns: data.columns,
+                                        },
+                                        meta: {},
+                                    },
+                                }}
+                            />,
+                        ]);
+                    }
                     return data;
                 }
             });
         return n;
     };
 
-    const postProcess = async (sidJob, postProcess, fieldsFunc, columnsFunc) => {
+    const postProcess = async (sidJob, postProcess, fieldsFunc, columnsFunc, appendBool, type) => {
         const n = await getData(
             sidJob,
             'results',
@@ -284,6 +336,88 @@ function App() {
                 if (data) {
                     fieldsFunc(data.fields);
                     columnsFunc(data.columns);
+
+                    console.log(singleValueSearchResultsColumns);
+                    console.log(singleValueSearchResultsFields);
+
+                    if (appendBool) {
+                        if (type == 'SingleValue') {
+                            setSingleValueViz([
+                                ...singleValueViz,
+                                <SingleValue
+                                    options={{
+                                        majorColor: '#008000',
+                                        sparklineDisplay: 'off',
+                                        trendDisplay: 'off',
+                                    }}
+                                    dataSources={{
+                                        primary: {
+                                            data: {
+                                                columns: data.columns,
+                                                fields: data.fields,
+                                            },
+                                            meta: {},
+                                        },
+                                    }}
+                                />,
+                            ]);
+                        }
+                        if (type == 'Column') {
+                            setColumnViz([
+                                ...columnViz,
+                                <Column
+                                    options={{}}
+                                    dataSources={{
+                                        primary: {
+                                            data: {
+                                                columns: data.columns,
+                                                fields: data.fields,
+                                            },
+                                            meta: {},
+                                        },
+                                    }}
+                                />,
+                            ]);
+                        }
+                    } else {
+                        if (type == 'SingleValue') {
+                            setSingleValueViz([
+                                <SingleValue
+                                    options={{
+                                        majorColor: '#008000',
+                                        sparklineDisplay: 'off',
+                                        trendDisplay: 'off',
+                                    }}
+                                    dataSources={{
+                                        primary: {
+                                            data: {
+                                                columns: data.columns,
+                                                fields: data.fields,
+                                            },
+                                            meta: {},
+                                        },
+                                    }}
+                                />,
+                            ]);
+                        }
+
+                        if (type == 'Column') {
+                            setColumnViz([
+                                <Column
+                                    options={{}}
+                                    dataSources={{
+                                        primary: {
+                                            data: {
+                                                columns: data.columns,
+                                                fields: data.fields,
+                                            },
+                                            meta: {},
+                                        },
+                                    }}
+                                />,
+                            ]);
+                        }
+                    }
                     return data;
                 }
             });
@@ -311,7 +445,8 @@ function App() {
         setSearchResultsColumns,
         setSearchingBool,
         setOptionsFunc,
-        searchOptions
+        searchOptions,
+        type
     ) => {
         setSearchObjFunction({
             search: searchOptions.search,
@@ -330,7 +465,8 @@ function App() {
                             setSecondsToComplete,
                             setSearchResultsFields,
                             setSearchResultsColumns,
-                            setSearchingBool
+                            setSearchingBool,
+                            type
                         );
                     });
 
@@ -458,7 +594,8 @@ function App() {
                                             setSingleValueSearchResultsColumns,
                                             setSingleValueSearching,
                                             setSingleValueSearchOptions,
-                                            singleValueSearchOptions
+                                            singleValueSearchOptions,
+                                            'SingleValue'
                                         )
                                     }
                                 />
@@ -467,23 +604,9 @@ function App() {
 
                             {singleValueSeondsToComplete ? (
                                 <>
-                                    <SingleValue
-                                        options={{
-                                            majorColor: '#008000',
-                                            sparklineDisplay: 'off',
-                                            trendDisplay: 'off',
-                                        }}
-                                        dataSources={{
-                                            primary: {
-                                                data: {
-                                                    columns: singleValueSearchResultsColumns,
-                                                    fields: singleValueSearchResultsFields,
-                                                },
-                                                meta: {},
-                                            },
-                                        }}
-                                    />
-
+                                    {singleValueViz.map((key, value) => {
+                                        return key;
+                                    })}
                                     <Heading style={wordBreakStyle} level={3}>
                                         Clicking this button will execute the following post-process
                                         search:{' '}
@@ -499,7 +622,9 @@ function App() {
                                                 singleValueSid,
                                                 splunkSearchSingleValuePostProcess,
                                                 setSingleValueSearchResultsFields,
-                                                setSingleValueSearchResultsColumns
+                                                setSingleValueSearchResultsColumns,
+                                                singleValueAppendPostProcess,
+                                                'SingleValue'
                                             )
                                         }
                                     />
@@ -551,7 +676,8 @@ function App() {
                                             setColumnSearchResultsColumns,
                                             setColumnSearching,
                                             setColumnSearchOptions,
-                                            columnSearchOptions
+                                            columnSearchOptions,
+                                            'Column'
                                         )
                                     }
                                 />
@@ -560,18 +686,9 @@ function App() {
 
                             {columnSecondsToComplete ? (
                                 <>
-                                    <Column
-                                        options={{}}
-                                        dataSources={{
-                                            primary: {
-                                                data: {
-                                                    fields: columnSearchResultsFields,
-                                                    columns: columnSearchResultsColumns,
-                                                },
-                                                meta: {},
-                                            },
-                                        }}
-                                    />
+                                    {columnViz.map((key, value) => {
+                                        return key;
+                                    })}
 
                                     <Heading style={wordBreakStyle} level={3}>
                                         Clicking this button will execute the following post-process
@@ -588,7 +705,9 @@ function App() {
                                                 columnSid,
                                                 splunkSearchColumnPostProcess,
                                                 setColumnSearchResultsFields,
-                                                setColumnSearchResultsColumns
+                                                setColumnSearchResultsColumns,
+                                                columnAppendPostProcess,
+                                                'Column'
                                             )
                                         }
                                     />

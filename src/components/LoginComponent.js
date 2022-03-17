@@ -31,7 +31,6 @@ function Login(props) {
         GetSessionKey(props.username, props.password, props.serverURL)
             .then((response) => response)
             .then((data) => {
-                console.log(data['sessionKey']);
                 props.setSessionKey(data['sessionKey']);
             });
     }

@@ -1,6 +1,15 @@
-# Getting Started with Create React App
+# SUIT Examples App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Available URL Parameters
+
+* username
+* password
+* serverURL
+
+Example URL when running in dev mode:
+http://localhost:3000/?username=admin&password=password&serverURL=https://localhost:8089
 
 ## Available Scripts
 
