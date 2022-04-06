@@ -1,7 +1,7 @@
 import './App.css';
 import { useState, useEffect, useCallback } from 'react';
 import { presets, formInputTypes } from './constants';
-
+import Navigation from './components/Navigation';
 //@splunk/visualizations imports
 //These are visualizations we are using for this demo
 import SingleValue from '@splunk/visualizations/SingleValue';
@@ -16,6 +16,7 @@ import Button from '@splunk/react-ui/Button';
 import WaitSpinner from '@splunk/react-ui/WaitSpinner';
 import Heading from '@splunk/react-ui/Heading';
 import Switch from '@splunk/react-ui/Switch';
+import SplunkThemeProvider from '@splunk/themes/SplunkThemeProvider';
 
 //@splunk/react-search imports.
 //These are what give us a search bar and time picker
@@ -29,7 +30,7 @@ import { createSearchJob, getData } from '@splunk/splunk-utils/search';
 //Custom Components
 import LoginComponent from './components/LoginComponent';
 
-function App() {
+function App(props) {
     //State variables for communication with Splunkd
 
     const queryParams = new URLSearchParams(window.location.search);
@@ -38,7 +39,7 @@ function App() {
     const [username, setUsername] = useState(queryParams.get('username'));
     const [password, setPassword] = useState(queryParams.get('password'));
     const [serverURL, setServerURL] = useState(queryParams.get('serverURL'));
-
+    const [darkMode, setDarkMode] = useState(true);
     const headers = {
         headers: {
             Authorization: `Splunk ${sessionKey}`,
@@ -277,6 +278,7 @@ function App() {
                 if (data) {
                     fieldsFunc(data.fields);
                     columnsFunc(data.columns);
+
                     if (type == 'SingleValue') {
                         setSingleValueViz([
                             <SingleValue
@@ -471,264 +473,282 @@ function App() {
         }
     };
 
+    const setDarkModeValue = (value) => {
+        setDarkMode(value);
+        console.log(darkMode);
+    };
+
     const wordBreakStyle = { overflowWrap: 'break-word', margin: '10px' };
     return (
-        <div className="App">
-            <header className="App-header">
-                <Heading level={1}>@splunk/splunk-utils Example app</Heading>
-                <P>
-                    This app will show you how to query Splunk from a remote webapp using our Splunk
-                    UI Toolkit in React. It uses a couple of packages listed below:{' '}
-                </P>
-                <List>
-                    <List.Item>
-                        <Link to="https://www.npmjs.com/package/@splunk/splunk-utils">
-                            @splunk/splunk-utils
-                        </Link>
-                    </List.Item>
-                    <ul>
-                        <li>
-                            <Link to="https://splunkui.splunkeng.com/Packages/splunk-utils">
-                                Documentation
+        <SplunkThemeProvider family="enterprise" colorScheme={darkMode ? 'dark' : 'light'}>
+            <Navigation setDarkMode={setDarkMode} />
+            <div
+                className="App"
+                style={!darkMode ? { backgroundColor: '#ffffff' } : { backgroundColor: '#282c34' }}
+            >
+                <header className="App-header">
+                    <Heading level={1}>@splunk/splunk-utils Example app</Heading>
+                    <P>
+                        This app will show you how to query Splunk from a remote webapp using our
+                        Splunk UI Toolkit in React. It uses a couple of packages listed below:{' '}
+                    </P>
+
+                    <List>
+                        <List.Item>
+                            <Link to="https://www.npmjs.com/package/@splunk/splunk-utils">
+                                @splunk/splunk-utils
                             </Link>
-                        </li>
-                    </ul>
-                    <List.Item>
-                        <Link to="https://www.npmjs.com/package/@splunk/visualizations">
-                            @splunk/visualizations
-                        </Link>
-                    </List.Item>
-                    <ul>
-                        <li>
-                            <Link to="https://splunkui.splunkeng.com/Packages/visualizations">
-                                Documentation
-                            </Link>
-                        </li>
-                    </ul>
-                    <List.Item>
-                        <Link to="https://www.npmjs.com/package/@splunk/react-ui">
-                            @splunk/react-ui
-                        </Link>
-                    </List.Item>
-                    <ul>
-                        <li>
-                            <Link to="https://splunkui.splunkeng.com/Packages/react-ui">
-                                Documentation
-                            </Link>
-                        </li>
-                    </ul>
-                </List>
-                {sessionKey == '<Token>' ? (
-                    <>
-                        <Heading level={2}>Setup Instructions</Heading>
-                        <P>
-                            Note: You may need to complete a step for this app to work with your
-                            Splunk Environment. Details below:
-                        </P>
-                        <List>
-                            <List.Item>
-                                You'll need to configure CORS on your Splunk Environment.
-                                Instructions can be found{' '}
-                                <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">
-                                    here
+                        </List.Item>
+                        <ul>
+                            <li>
+                                <Link to="https://splunkui.splunkeng.com/Packages/splunk-utils">
+                                    Documentation
                                 </Link>
-                            </List.Item>
-                            <List.Item>
-                                You'll need to have a trusted certificate for the Splunk management
-                                port. If you don't have a valid certificate, you can always visit
-                                the URL for the management port of your Splunk environment, and
-                                trust the certificate manually with your browser.
-                            </List.Item>
-                        </List>
-                    </>
-                ) : (
-                    <></>
-                )}
+                            </li>
+                        </ul>
+                        <List.Item>
+                            <Link to="https://www.npmjs.com/package/@splunk/visualizations">
+                                @splunk/visualizations
+                            </Link>
+                        </List.Item>
+                        <ul>
+                            <li>
+                                <Link to="https://splunkui.splunkeng.com/Packages/visualizations">
+                                    Documentation
+                                </Link>
+                            </li>
+                        </ul>
+                        <List.Item>
+                            <Link to="https://www.npmjs.com/package/@splunk/react-ui">
+                                @splunk/react-ui
+                            </Link>
+                        </List.Item>
+                        <ul>
+                            <li>
+                                <Link to="https://splunkui.splunkeng.com/Packages/react-ui">
+                                    Documentation
+                                </Link>
+                            </li>
+                        </ul>
+                    </List>
+                    {sessionKey == '<Token>' ? (
+                        <>
+                            <Heading level={2}>Setup Instructions</Heading>
+                            <P>
+                                Note: You may need to complete a step for this app to work with your
+                                Splunk Environment. Details below:
+                            </P>
+                            <List>
+                                <List.Item>
+                                    You'll need to configure CORS on your Splunk Environment.
+                                    Instructions can be found{' '}
+                                    <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">
+                                        here
+                                    </Link>
+                                </List.Item>
+                                <List.Item>
+                                    You'll need to have a trusted certificate for the Splunk
+                                    management port. If you don't have a valid certificate, you can
+                                    always visit the URL for the management port of your Splunk
+                                    environment, and trust the certificate manually with your
+                                    browser.
+                                </List.Item>
+                            </List>
+                        </>
+                    ) : (
+                        <></>
+                    )}
 
-                {sessionKey == '<Token>' ? (
-                    <>
-                        <LoginComponent
-                            username={username}
-                            setUsername={setUsername}
-                            password={password}
-                            setPassword={setPassword}
-                            serverURL={serverURL}
-                            setServerURL={setServerURL}
-                            sessionKey={sessionKey}
-                            setSessionKey={setSessionKey}
-                        ></LoginComponent>
-                    </>
-                ) : (
-                    <div style={{ width: '100%' }}>
-                        <div style={{ float: 'left', width: '47%', padding: '10px' }}>
-                            <Heading style={wordBreakStyle} level={3}>
-                                This is a Single Value that is populated by the following search:{' '}
-                            </Heading>
-                            <div style={{ padding: '10px' }}>
-                                <SearchBar
-                                    options={singleValueSearchOptions}
-                                    onOptionsChange={(options) =>
-                                        handleOptionsChange(
-                                            options,
-                                            setSingleValueSearchOptions,
-                                            singleValueSearchOptions
-                                        )
-                                    }
-                                    onEventTrigger={(eventType) =>
-                                        handleEventTrigger(
-                                            eventType,
-                                            singleValueSid,
-                                            setSingleValueSid,
-                                            setSingleValueSearchObj,
-                                            singleValueSearchObj,
-                                            setSingleValueSecondsToComplete,
-                                            setSingleValueSearchResultsFields,
-                                            setSingleValueSearchResultsColumns,
-                                            setSingleValueSearching,
-                                            setSingleValueSearchOptions,
-                                            singleValueSearchOptions,
-                                            'SingleValue'
-                                        )
-                                    }
-                                />
-                            </div>
-                            {singleValueSearching ? <WaitSpinner size="medium" /> : <></>}
-
-                            {singleValueSeondsToComplete ? (
-                                <>
-                                    {singleValueViz.map((key, value) => {
-                                        return key;
-                                    })}
-                                    <Heading style={wordBreakStyle} level={3}>
-                                        Clicking this button will execute the following post-process
-                                        search:{' '}
-                                    </Heading>
-
-                                    {singleValuePostProcessBar}
-
-                                    <Button
-                                        label="Execute Post-process"
-                                        appearance="primary"
-                                        onClick={() =>
-                                            handlePostProcessClick(
+                    {sessionKey == '<Token>' ? (
+                        <>
+                            <LoginComponent
+                                username={username}
+                                setUsername={setUsername}
+                                password={password}
+                                setPassword={setPassword}
+                                serverURL={serverURL}
+                                setServerURL={setServerURL}
+                                sessionKey={sessionKey}
+                                setSessionKey={setSessionKey}
+                                darkMode={darkMode}
+                            ></LoginComponent>
+                        </>
+                    ) : (
+                        <div style={{ width: '100%' }}>
+                            <div style={{ float: 'left', width: '47%', padding: '10px' }}>
+                                <Heading style={wordBreakStyle} level={3}>
+                                    This is a Single Value that is populated by the following
+                                    search:{' '}
+                                </Heading>
+                                <div style={{ padding: '10px' }}>
+                                    <SearchBar
+                                        options={singleValueSearchOptions}
+                                        onOptionsChange={(options) =>
+                                            handleOptionsChange(
+                                                options,
+                                                setSingleValueSearchOptions,
+                                                singleValueSearchOptions
+                                            )
+                                        }
+                                        onEventTrigger={(eventType) =>
+                                            handleEventTrigger(
+                                                eventType,
                                                 singleValueSid,
-                                                splunkSearchSingleValuePostProcess,
+                                                setSingleValueSid,
+                                                setSingleValueSearchObj,
+                                                singleValueSearchObj,
+                                                setSingleValueSecondsToComplete,
                                                 setSingleValueSearchResultsFields,
                                                 setSingleValueSearchResultsColumns,
-                                                singleValueAppendPostProcess,
+                                                setSingleValueSearching,
+                                                setSingleValueSearchOptions,
+                                                singleValueSearchOptions,
                                                 'SingleValue'
                                             )
                                         }
                                     />
-                                    <P style={wordBreakStyle}>
-                                        Search: {singleValueSearchOptions.search}
-                                    </P>
-                                    <P style={wordBreakStyle}>{'Splunk SID: ' + singleValueSid}</P>
-                                    <P style={wordBreakStyle}>
-                                        {'Seconds to Complete: ' +
-                                            JSON.stringify(singleValueSeondsToComplete)}
-                                    </P>
-                                    <P style={wordBreakStyle}>
-                                        {'Splunk Results - Fields: ' +
-                                            JSON.stringify(singleValueSearchResultsFields)}
-                                    </P>
-                                    <P style={wordBreakStyle}>
-                                        {'Splunk Results - Columns: ' +
-                                            JSON.stringify(singleValueSearchResultsColumns)}
-                                    </P>
-                                </>
-                            ) : (
-                                <></>
-                            )}
-                        </div>
+                                </div>
+                                {singleValueSearching ? <WaitSpinner size="medium" /> : <></>}
 
-                        <div style={{ float: 'right', width: '47%', padding: '10px' }}>
-                            <Heading style={wordBreakStyle} level={3}>
-                                This is a Column Chart that is populated by the following search:{' '}
-                            </Heading>
-                            <div style={{ padding: '10px' }}>
-                                <SearchBar
-                                    options={columnSearchOptions}
-                                    onOptionsChange={(options) =>
-                                        handleOptionsChange(
-                                            options,
-                                            setColumnSearchOptions,
-                                            columnSearchOptions
-                                        )
-                                    }
-                                    onEventTrigger={(eventType) =>
-                                        handleEventTrigger(
-                                            eventType,
-                                            columnSid,
-                                            setColumnSid,
-                                            setColumnSearchObj,
-                                            columnSearchObj,
-                                            setColumnSecondsToComplete,
-                                            setColumnSearchResultsFields,
-                                            setColumnSearchResultsColumns,
-                                            setColumnSearching,
-                                            setColumnSearchOptions,
-                                            columnSearchOptions,
-                                            'Column'
-                                        )
-                                    }
-                                />
+                                {singleValueSeondsToComplete ? (
+                                    <>
+                                        {singleValueViz.map((key, value) => {
+                                            return key;
+                                        })}
+                                        <Heading style={wordBreakStyle} level={3}>
+                                            Clicking this button will execute the following
+                                            post-process search:{' '}
+                                        </Heading>
+
+                                        {singleValuePostProcessBar}
+
+                                        <Button
+                                            label="Execute Post-process"
+                                            appearance="primary"
+                                            onClick={() =>
+                                                handlePostProcessClick(
+                                                    singleValueSid,
+                                                    splunkSearchSingleValuePostProcess,
+                                                    setSingleValueSearchResultsFields,
+                                                    setSingleValueSearchResultsColumns,
+                                                    singleValueAppendPostProcess,
+                                                    'SingleValue'
+                                                )
+                                            }
+                                        />
+                                        <P style={wordBreakStyle}>
+                                            Search: {singleValueSearchOptions.search}
+                                        </P>
+                                        <P style={wordBreakStyle}>
+                                            {'Splunk SID: ' + singleValueSid}
+                                        </P>
+                                        <P style={wordBreakStyle}>
+                                            {'Seconds to Complete: ' +
+                                                JSON.stringify(singleValueSeondsToComplete)}
+                                        </P>
+                                        <P style={wordBreakStyle}>
+                                            {'Splunk Results - Fields: ' +
+                                                JSON.stringify(singleValueSearchResultsFields)}
+                                        </P>
+                                        <P style={wordBreakStyle}>
+                                            {'Splunk Results - Columns: ' +
+                                                JSON.stringify(singleValueSearchResultsColumns)}
+                                        </P>
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
                             </div>
-                            {columnSearching ? <WaitSpinner size="medium" /> : <></>}
 
-                            {columnSecondsToComplete ? (
-                                <>
-                                    {columnViz.map((key, value) => {
-                                        return key;
-                                    })}
-
-                                    <Heading style={wordBreakStyle} level={3}>
-                                        Clicking this button will execute the following post-process
-                                        search:{' '}
-                                    </Heading>
-
-                                    {columnPostProcessBar}
-
-                                    <Button
-                                        label="Execute Post-process"
-                                        appearance="primary"
-                                        onClick={() =>
-                                            handlePostProcessClick(
+                            <div style={{ float: 'right', width: '47%', padding: '10px' }}>
+                                <Heading style={wordBreakStyle} level={3}>
+                                    This is a Column Chart that is populated by the following
+                                    search:{' '}
+                                </Heading>
+                                <div style={{ padding: '10px' }}>
+                                    <SearchBar
+                                        options={columnSearchOptions}
+                                        onOptionsChange={(options) =>
+                                            handleOptionsChange(
+                                                options,
+                                                setColumnSearchOptions,
+                                                columnSearchOptions
+                                            )
+                                        }
+                                        onEventTrigger={(eventType) =>
+                                            handleEventTrigger(
+                                                eventType,
                                                 columnSid,
-                                                splunkSearchColumnPostProcess,
+                                                setColumnSid,
+                                                setColumnSearchObj,
+                                                columnSearchObj,
+                                                setColumnSecondsToComplete,
                                                 setColumnSearchResultsFields,
                                                 setColumnSearchResultsColumns,
-                                                columnAppendPostProcess,
+                                                setColumnSearching,
+                                                setColumnSearchOptions,
+                                                columnSearchOptions,
                                                 'Column'
                                             )
                                         }
                                     />
+                                </div>
+                                {columnSearching ? <WaitSpinner size="medium" /> : <></>}
 
-                                    <P style={wordBreakStyle}>
-                                        Search: {columnSearchOptions.search}
-                                    </P>
-                                    <P>{'Splunk SID: ' + columnSid}</P>
-                                    <P style={wordBreakStyle}>
-                                        {'Seconds to Complete: ' +
-                                            JSON.stringify(columnSecondsToComplete)}
-                                    </P>
-                                    <P style={wordBreakStyle}>
-                                        {'Splunk Results - Fields: ' +
-                                            JSON.stringify(columnSearchResultsFields)}
-                                    </P>
-                                    <P style={wordBreakStyle}>
-                                        {'Splunk Results - Columns: ' +
-                                            JSON.stringify(columnSearchResultsColumns)}
-                                    </P>
-                                </>
-                            ) : (
-                                <></>
-                            )}
+                                {columnSecondsToComplete ? (
+                                    <>
+                                        {columnViz.map((key, value) => {
+                                            return key;
+                                        })}
+
+                                        <Heading style={wordBreakStyle} level={3}>
+                                            Clicking this button will execute the following
+                                            post-process search:{' '}
+                                        </Heading>
+
+                                        {columnPostProcessBar}
+
+                                        <Button
+                                            label="Execute Post-process"
+                                            appearance="primary"
+                                            onClick={() =>
+                                                handlePostProcessClick(
+                                                    columnSid,
+                                                    splunkSearchColumnPostProcess,
+                                                    setColumnSearchResultsFields,
+                                                    setColumnSearchResultsColumns,
+                                                    columnAppendPostProcess,
+                                                    'Column'
+                                                )
+                                            }
+                                        />
+
+                                        <P style={wordBreakStyle}>
+                                            Search: {columnSearchOptions.search}
+                                        </P>
+                                        <P>{'Splunk SID: ' + columnSid}</P>
+                                        <P style={wordBreakStyle}>
+                                            {'Seconds to Complete: ' +
+                                                JSON.stringify(columnSecondsToComplete)}
+                                        </P>
+                                        <P style={wordBreakStyle}>
+                                            {'Splunk Results - Fields: ' +
+                                                JSON.stringify(columnSearchResultsFields)}
+                                        </P>
+                                        <P style={wordBreakStyle}>
+                                            {'Splunk Results - Columns: ' +
+                                                JSON.stringify(columnSearchResultsColumns)}
+                                        </P>
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                )}
-            </header>
-        </div>
+                    )}
+                </header>
+            </div>
+        </SplunkThemeProvider>
     );
 }
 

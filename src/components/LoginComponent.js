@@ -3,6 +3,7 @@ import Heading from '@splunk/react-ui/Heading';
 import Text from '@splunk/react-ui/Text';
 import Button from '@splunk/react-ui/Button';
 import { useState, useEffect } from 'react';
+import SplunkThemeProvider from '@splunk/themes/SplunkThemeProvider';
 
 function Login(props) {
     //Headers for Authorization
@@ -57,36 +58,45 @@ function Login(props) {
 
     return (
         <>
-            <Heading level={1}>Please login to Splunk</Heading>
+            <SplunkThemeProvider
+                family="enterprise"
+                colorScheme={props.darkMode ? 'dark' : 'light'}
+            >
+                <Heading level={1}>Please login to Splunk</Heading>
 
-            <form>
-                <Heading level={2}>Splunk Server:</Heading>
+                <form>
+                    <Heading level={2}>Splunk Server:</Heading>
 
-                <Text
-                    style={{ width: '200px' }}
-                    type="server"
-                    value={props.serverURL}
-                    onChange={handleServerChange}
-                />
-                <Heading level={2}>Username:</Heading>
+                    <Text
+                        style={{ width: '200px' }}
+                        type="server"
+                        value={props.serverURL}
+                        onChange={handleServerChange}
+                    />
+                    <Heading level={2}>Username:</Heading>
 
-                <Text
-                    style={{ width: '200px' }}
-                    type="username"
-                    value={props.username}
-                    onChange={handleUsernameChange}
-                />
-                <Heading level={2}>Password:</Heading>
+                    <Text
+                        style={{ width: '200px' }}
+                        type="username"
+                        value={props.username}
+                        onChange={handleUsernameChange}
+                    />
+                    <Heading level={2}>Password:</Heading>
 
-                <Text
-                    style={{ width: '200px' }}
-                    type="password"
-                    value={props.password}
-                    onChange={handlePasswordChange}
-                />
-                <br />
-                <Button label="Login" appearance="primary" onClick={() => handleLoginButton()} />
-            </form>
+                    <Text
+                        style={{ width: '200px' }}
+                        type="password"
+                        value={props.password}
+                        onChange={handlePasswordChange}
+                    />
+                    <br />
+                    <Button
+                        label="Login"
+                        appearance="primary"
+                        onClick={() => handleLoginButton()}
+                    />
+                </form>
+            </SplunkThemeProvider>
         </>
     );
 }
