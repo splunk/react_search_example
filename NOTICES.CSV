@@ -1,0 +1,21 @@
+department,related to,name,license period,material / not material,license type,link,remote version,installed version,author
+kessler,stuff,@splunk/dashboard-core,perpetual,material,SEE LICENSE IN LICENSE.md,https://registry.npmjs.org/@splunk/dashboard-core/-/dashboard-core-24.5.0.tgz,24.5.0,24.2.0,Splunk
+kessler,stuff,@splunk/react-icons,perpetual,material,Apache-2.0,https://registry.npmjs.org/@splunk/react-icons/-/react-icons-3.2.0.tgz,3.2.0,3.1.0,Splunk Inc.
+kessler,stuff,@splunk/react-search,perpetual,material,Apache-2.0,https://registry.npmjs.org/@splunk/react-search/-/react-search-4.0.1.tgz,4.0.1,4.0.1,Splunk Inc.
+kessler,stuff,@splunk/react-ui,perpetual,material,Apache-2.0,https://registry.npmjs.org/@splunk/react-ui/-/react-ui-4.8.0.tgz,4.8.0,4.4.3,Splunk Inc.
+kessler,stuff,@splunk/search-job,perpetual,material,Apache-2.0,https://registry.npmjs.org/@splunk/search-job/-/search-job-2.0.0.tgz,2.0.0,2.0.0,Splunk Inc.
+kessler,stuff,@splunk/splunk-utils,perpetual,material,Apache-2.0,https://registry.npmjs.org/@splunk/splunk-utils/-/splunk-utils-2.1.0.tgz,2.1.0,2.1.0,Splunk Inc.
+kessler,stuff,@splunk/themes,perpetual,material,Apache-2.0,https://registry.npmjs.org/@splunk/themes/-/themes-0.10.1.tgz,0.10.1,0.10.1,Splunk Inc.
+kessler,stuff,@splunk/visualization-context,perpetual,material,SEE LICENSE IN LICENSE.md,git ls-files --others -i --exclude-standard *.js *.map | xargs rm,24.5.0,24.0.0,Splunk
+kessler,stuff,@splunk/visualizations,perpetual,material,SEE LICENSE IN LICENSE.md,git ls-files --others -i --exclude-standard *.js *.map | xargs rm,24.5.0,24.0.0,Splunk
+kessler,stuff,@testing-library/jest-dom,perpetual,material,MIT,git+https://github.com/testing-library/jest-dom.git,5.16.4,5.16.1,Ernesto Garcia
+kessler,stuff,@testing-library/react,perpetual,material,MIT,git+https://github.com/testing-library/react-testing-library.git,12.1.5,12.1.2,Kent C. Dodds
+kessler,stuff,@testing-library/user-event,perpetual,material,MIT,git+https://github.com/testing-library/user-event.git,13.5.0,13.5.0,Giorgio Polvara
+kessler,stuff,http-proxy-middleware,perpetual,material,MIT,git+https://github.com/chimurai/http-proxy-middleware.git,2.0.6,2.0.3,Steven Chim
+kessler,stuff,querystring,perpetual,material,MIT,git://github.com/Gozala/querystring.git,0.2.1,0.2.1,Irakli Gozalishvili
+kessler,stuff,react,perpetual,material,MIT,git+https://github.com/facebook/react.git,16.14.0,16.14.0,n/a
+kessler,stuff,react-dom,perpetual,material,MIT,git+https://github.com/facebook/react.git,16.14.0,16.14.0,n/a
+kessler,stuff,react-router-dom,perpetual,material,MIT,git+https://github.com/remix-run/react-router.git,6.3.0,6.2.2,Remix Software
+kessler,stuff,react-scripts,perpetual,material,MIT,git+https://github.com/facebook/create-react-app.git,5.0.0,5.0.0,n/a
+kessler,stuff,styled-components,perpetual,material,MIT,git+https://github.com/styled-components/styled-components.git,5.3.5,5.3.3,Glen Maddern
+kessler,stuff,web-vitals,perpetual,material,Apache-2.0,git+https://github.com/GoogleChrome/web-vitals.git,2.1.4,2.1.2,Philip Walton
