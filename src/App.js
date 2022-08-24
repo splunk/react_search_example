@@ -22,6 +22,7 @@ import SplunkThemeProvider from '@splunk/themes/SplunkThemeProvider';
 //These are what give us a search bar and time picker
 import SearchBar from '@splunk/react-search/components/Bar';
 import Input from '@splunk/react-search/components/Input';
+import searchBNF from '@splunk/dashboard-utils/defaultSPLSyntax.json';
 
 //@splunk/splunk-utils imports.
 //This is what is used to create search jobs
@@ -71,6 +72,7 @@ function App(props) {
         timePickerPresets: presets,
         timePickerFormInputTypes: formInputTypes,
         timePickerAdvancedInputTypes: [],
+        syntax: searchBNF,
     });
     const [columnSearchObj, setColumnSearchObj] = useState({
         search: '',
@@ -115,6 +117,7 @@ function App(props) {
                 onChange={(e, value) =>
                     handlePostProcessChange(e, value, setSplunkSearchColumnPostProcess)
                 }
+                syntax={searchBNF}
                 onEnter={() =>
                     handleEventTrigger(
                         columnSid,
@@ -152,6 +155,7 @@ function App(props) {
         timePickerPresets: presets,
         timePickerFormInputTypes: formInputTypes,
         timePickerAdvancedInputTypes: [],
+        syntax: searchBNF,
     });
     const [singleValueSearchObj, setSingleValueSearchObj] = useState({
         search: '',
@@ -198,6 +202,7 @@ function App(props) {
                 onChange={(e, value) =>
                     handlePostProcessChange(e, value, setSplunkSearchSingleValuePostProcess)
                 }
+                syntax={searchBNF}
                 onEnter={() =>
                     handleEventTrigger(
                         singleValueSid,

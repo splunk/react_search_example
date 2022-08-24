@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@splunk/dashboard-core": "^24.2.0",
+    "@splunk/dashboard-utils": "^24.9.1",
     "@splunk/react-icons": "^3.1.0",
     "@splunk/react-search": "^4.0.1",
     "@splunk/react-ui": "^4.4.3",
