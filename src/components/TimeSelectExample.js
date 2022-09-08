@@ -1,6 +1,10 @@
 import "./App.css";
 import { useState } from "react";
 import { presets, formInputTypes } from "../constants";
+import SplunkThemeProvider from "@splunk/themes/SplunkThemeProvider";
+import Navigation from ".//Navigation";
+import searchBNF from "@splunk/dashboard-utils/defaultSPLSyntax.json";
+import Heading from "@splunk/react-ui/Heading";
 
 //@splunk/visualizations imports
 //These are visualizations we are using for this demo
@@ -12,7 +16,6 @@ import Link from "@splunk/react-ui/Link";
 import List from "@splunk/react-ui/List";
 import P from "@splunk/react-ui/Paragraph";
 import WaitSpinner from "@splunk/react-ui/WaitSpinner";
-import Heading from "@splunk/react-ui/Heading";
 import Select from "@splunk/react-ui/Select";
 
 //@splunk/react-search imports.
@@ -35,6 +38,7 @@ function TimeSelectExample(props) {
   const [username, setUsername] = useState(queryParams.get("username"));
   const [password, setPassword] = useState(queryParams.get("password"));
   const [serverURL, setServerURL] = useState(queryParams.get("serverURL"));
+  const [darkMode, setDarkMode] = useState(false);
 
   const headers = {
     headers: {
@@ -73,6 +77,7 @@ function TimeSelectExample(props) {
     timePickerPresets: presets,
     timePickerFormInputTypes: formInputTypes,
     timePickerAdvancedInputTypes: [],
+    syntax: searchBNF,
   });
   const [columnSearchObj, setColumnSearchObj] = useState({
     search: "",
@@ -272,108 +277,133 @@ function TimeSelectExample(props) {
 
   const wordBreakStyle = { overflowWrap: "break-word", margin: "10px" };
   return (
-    <div className="App">
-      <header className="App-header">
-        {sessionKey === "<Token>" ? (
-          <>
-            <Heading level={2}>Setup Instructions</Heading>
-            <P>
-              Note: You may need to complete a step for this app to work with
-              your Splunk Environment. Details below:
-            </P>
-            <List>
-              <List.Item>
-                You'll need to configure CORS on your Splunk Environment.
-                Instructions can be found{" "}
-                <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">
-                  here
-                </Link>
-              </List.Item>
-              <List.Item>
-                You'll need to have a trusted certificate for the Splunk
-                management port. If you don't have a valid certificate, you can
-                always visit the URL for the management port of your Splunk
-                environment, and trust the certificate manually with your
-                browser.
-              </List.Item>
-            </List>
-          </>
-        ) : (
-          <></>
-        )}
+    <SplunkThemeProvider
+      family="enterprise"
+      colorScheme={!darkMode ? "light" : "dark"}
+    >
+      <Navigation setDarkMode={setDarkMode} />
+      <div
+        className="App"
+        style={
+          !darkMode
+            ? { backgroundColor: "#ffffff" }
+            : { backgroundColor: "#282c34" }
+        }
+      >
+        <header className="App-header">
+          {sessionKey === "<Token>" ? (
+            <>
+              <Heading level={2}>Setup Instructions</Heading>
+              <P>
+                Note: You may need to complete a step for this app to work with
+                your Splunk Environment. Details below:
+              </P>
+              <List>
+                <List.Item>
+                  You'll need to configure CORS on your Splunk Environment.
+                  Instructions can be found{" "}
+                  <Link to="https://dev.splunk.com/enterprise/docs/developapps/visualizedata/usesplunkjsstack/communicatesplunkserver/">
+                    here
+                  </Link>
+                </List.Item>
+                <List.Item>
+                  You'll need to have a trusted certificate for the Splunk
+                  management port. If you don't have a valid certificate, you
+                  can always visit the URL for the management port of your
+                  Splunk environment, and trust the certificate manually with
+                  your browser.
+                </List.Item>
+              </List>
+            </>
+          ) : (
+            <></>
+          )}
 
-        {sessionKey === "<Token>" ? (
-          <>
-            <LoginComponent
-              username={username}
-              setUsername={setUsername}
-              password={password}
-              setPassword={setPassword}
-              serverURL={serverURL}
-              setServerURL={setServerURL}
-              sessionKey={sessionKey}
-              setSessionKey={setSessionKey}
-            ></LoginComponent>
-          </>
-        ) : (
-          <div style={{ width: "100%" }}>
-            <div style={{ float: "right", width: "100%", padding: "10px" }}>
-              <Heading style={wordBreakStyle} level={3}>
-                This is a Line Chart that is populated by the following search:{" "}
-              </Heading>
-              <div style={{ padding: "10px" }}>
-                <SearchBar
-                  options={columnSearchOptions}
-                  onOptionsChange={(options) =>
-                    handleOptionsChange(
-                      options,
-                      setColumnSearchOptions,
-                      columnSearchOptions
-                    )
-                  }
-                  onEventTrigger={(eventType) =>
-                    handleEventTrigger(
-                      eventType,
-                      columnSid,
-                      setColumnSid,
-                      setColumnSearchObj,
-                      columnSearchObj,
-                      setColumnSecondsToComplete,
-                      setColumnSearchResultsFields,
-                      setColumnSearchResultsColumns,
-                      setColumnSearching,
-                      setColumnSearchOptions,
-                      columnSearchOptions,
-                      "Line"
-                    )
-                  }
-                />
-              </div>
-              {columnSearching ? <WaitSpinner size="medium" /> : <></>}
-
-              {columnSecondsToComplete ? (
-                <div style={{ align: "center", padding: "40px" }}>
-                  <h3>Show Only Values Before: </h3>
-                  <Select style={{ width: 200 }} onChange={selectTime}>
-                    {staticcolumnSearchResultsColumns[0].map((key, value) => {
-                      return (
-                        <Select.Option label={key} value={key}></Select.Option>
-                      );
-                    })}
-                  </Select>
-                  <div style={{ margin: "20px" }}></div>
-                  {lineViz.map((key, value) => {
-                    return key;
-                  })}
+          {sessionKey === "<Token>" ? (
+            <>
+              <LoginComponent
+                username={username}
+                setUsername={setUsername}
+                password={password}
+                setPassword={setPassword}
+                serverURL={serverURL}
+                setServerURL={setServerURL}
+                sessionKey={sessionKey}
+                setSessionKey={setSessionKey}
+                darkMode={darkMode}
+              ></LoginComponent>
+            </>
+          ) : (
+            <div style={{ width: "100%" }}>
+              <div style={{ float: "right", width: "100%", padding: "10px" }}>
+                <Heading style={wordBreakStyle} level={3}>
+                  This is a Line Chart that is populated by the following
+                  search:{" "}
+                </Heading>
+                <div style={{ padding: "10px" }}>
+                  <SearchBar
+                    options={columnSearchOptions}
+                    onOptionsChange={(options) =>
+                      handleOptionsChange(
+                        options,
+                        setColumnSearchOptions,
+                        columnSearchOptions
+                      )
+                    }
+                    onEventTrigger={(eventType) =>
+                      handleEventTrigger(
+                        eventType,
+                        columnSid,
+                        setColumnSid,
+                        setColumnSearchObj,
+                        columnSearchObj,
+                        setColumnSecondsToComplete,
+                        setColumnSearchResultsFields,
+                        setColumnSearchResultsColumns,
+                        setColumnSearching,
+                        setColumnSearchOptions,
+                        columnSearchOptions,
+                        "Line"
+                      )
+                    }
+                  />
                 </div>
-              ) : (
-                <></>
-              )}
+                {columnSearching ? <WaitSpinner size="medium" /> : <></>}
+
+                {columnSecondsToComplete ? (
+                  <div
+                    style={{
+                      align: "center",
+                      textAlign: "center",
+                      margin: "auto",
+                      padding: "40px",
+                    }}
+                  >
+                    <Heading level={3}>Show Only Values Before: </Heading>
+                    <Select style={{ width: 200 }} onChange={selectTime}>
+                      {staticcolumnSearchResultsColumns[0].map((key, value) => {
+                        return (
+                          <Select.Option
+                            label={key}
+                            value={key}
+                          ></Select.Option>
+                        );
+                      })}
+                    </Select>
+                    <div style={{ margin: "20px" }}></div>
+                    {lineViz.map((key, value) => {
+                      return key;
+                    })}
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      </header>
-    </div>
+          )}
+        </header>
+      </div>
+    </SplunkThemeProvider>
   );
 }
 
