@@ -1,16 +1,24 @@
 import Heading from '@splunk/react-ui/Heading';
-import React from 'react';
+import React, { useState } from 'react';
 import { getUserTheme } from '@splunk/splunk-utils/themes';
 
-function Themes(props) {
-    console.log(props.darkMode);
-    return (
-        <div style={{ vericalAlign: 'top' }}>
-            <Heading level={3}>User Theme:</Heading>
+function Themes() {
+    const [theme, setTheme] = useState();
 
-            <Heading level={1}>{getUserTheme()}</Heading>
-        </div>
-    );
+    getUserTheme().then((data) => {
+        setTheme(data);
+    });
+
+    if (theme) {
+        return (
+            <div style={{ vericalAlign: 'top' }}>
+                <Heading level={3}>Current Theme:</Heading>
+                {theme}
+            </div>
+        );
+    } else {
+        return 'Loading...';
+    }
 }
 
 export default Themes;

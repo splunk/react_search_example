@@ -6,6 +6,7 @@ import Boolean from './Boolean';
 import Button from '@splunk/react-ui/Button';
 import Config from './Config';
 import URL from './URL';
+import Themes from './Themes';
 function Layout() {
     const [selectedComponent, setSelectedComponent] = useState(<></>);
 
@@ -26,6 +27,12 @@ function Layout() {
         e.preventDefault();
         setSelectedComponent(<Config />);
     }
+
+    function switchTheme(e) {
+        e.preventDefault();
+        setSelectedComponent(<Themes />);
+    }
+
     function switchURL(e) {
         e.preventDefault();
         setSelectedComponent(<URL />);
@@ -56,6 +63,13 @@ function Layout() {
                         style={{ textAlign: 'center', padding: '20px' }}
                     >
                         Config
+                    </Link>
+                    <Link
+                        className="nav-link"
+                        onClick={(e) => switchTheme(e)}
+                        style={{ textAlign: 'center', padding: '20px' }}
+                    >
+                        Themes
                     </Link>
                     <Link
                         className="nav-link"
