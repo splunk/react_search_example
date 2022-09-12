@@ -3,7 +3,6 @@ import React from 'react';
 import { createURL, createStaticURL, createRESTURL } from '@splunk/splunk-utils/url';
 
 function URL(props) {
-    console.log(props.darkMode);
     return (
         <div style={{ vericalAlign: 'top' }}>
             <Heading level={3}>Create a URL for Search Jobs:</Heading>

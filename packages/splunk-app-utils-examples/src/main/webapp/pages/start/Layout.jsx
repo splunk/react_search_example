@@ -7,6 +7,7 @@ import Button from '@splunk/react-ui/Button';
 import Config from './Config';
 import URL from './URL';
 import Themes from './Themes';
+import SavedSearch from './SavedSearch';
 function Layout() {
     const [selectedComponent, setSelectedComponent] = useState(<></>);
 
@@ -36,6 +37,11 @@ function Layout() {
     function switchURL(e) {
         e.preventDefault();
         setSelectedComponent(<URL />);
+    }
+
+    function switchSavedSearch(e) {
+        e.preventDefault();
+        setSelectedComponent(<SavedSearch />);
     }
     return (
         <SplunkThemeProvider family="enterprise">
@@ -77,6 +83,13 @@ function Layout() {
                         style={{ textAlign: 'center', padding: '20px' }}
                     >
                         URL
+                    </Link>
+                    <Link
+                        className="nav-link"
+                        onClick={(e) => switchSavedSearch(e)}
+                        style={{ textAlign: 'center', padding: '20px' }}
+                    >
+                        Saved Search
                     </Link>
                     <Button
                         label="Splunk UI Docs"
