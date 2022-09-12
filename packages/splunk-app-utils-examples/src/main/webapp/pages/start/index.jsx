@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Layout from './Layout';
 import layout from '@splunk/react-page';
 import { getUserTheme } from '@splunk/splunk-utils/themes';

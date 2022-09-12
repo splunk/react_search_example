@@ -11,7 +11,7 @@ function URL(props) {
 
             <Heading level={3}>Create a URL to a JS File in your App:</Heading>
 
-            <Heading level={1}>{createStaticURL('/static/app/search/js/foo.js')}</Heading>
+            <Heading level={1}>{createStaticURL('static/app/search/js/foo.js')}</Heading>
 
             <Heading level={3}>Create a REST URL to query All Saved Searches:</Heading>
 

@@ -8,12 +8,9 @@ import Config from './Config';
 import URL from './URL';
 import Themes from './Themes';
 import SavedSearch from './SavedSearch';
+import Fetch from './Fetch';
 function Layout() {
     const [selectedComponent, setSelectedComponent] = useState(<></>);
-
-    function handleDarkModeClick() {
-        setDarkMode((event) => !event);
-    }
 
     function switchHome(e) {
         e.preventDefault();
@@ -42,6 +39,11 @@ function Layout() {
     function switchSavedSearch(e) {
         e.preventDefault();
         setSelectedComponent(<SavedSearch />);
+    }
+
+    function switchFetch(e) {
+        e.preventDefault();
+        setSelectedComponent(<Fetch />);
     }
     return (
         <SplunkThemeProvider family="enterprise">
@@ -90,6 +92,14 @@ function Layout() {
                         style={{ textAlign: 'center', padding: '20px' }}
                     >
                         Saved Search
+                    </Link>
+
+                    <Link
+                        className="nav-link"
+                        onClick={(e) => switchFetch(e)}
+                        style={{ textAlign: 'center', padding: '20px' }}
+                    >
+                        Fetch
                     </Link>
                     <Button
                         label="Splunk UI Docs"
