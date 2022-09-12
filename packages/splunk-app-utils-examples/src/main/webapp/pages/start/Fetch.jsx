@@ -5,16 +5,10 @@ import querystring from 'querystring';
 import { createRESTURL } from '@splunk/splunk-utils/url';
 import P from '@splunk/react-ui/Paragraph';
 
-import {
-    defaultFetchInit,
-    findErrorMessage,
-    handleResponse,
-    handleError,
-} from '@splunk/splunk-utils/fetch';
+import { defaultFetchInit, findErrorMessage, handleResponse } from '@splunk/splunk-utils/fetch';
 
-function Fetch(props) {
+function Fetch() {
     const [foundErrorResult, setFoundError] = useState('None');
-    const [validSearch, setValidSearch] = useState({ valid: 'unknown' });
 
     useEffect(() => {
         async function parseSearch() {
@@ -23,10 +17,9 @@ function Fetch(props) {
                 parse_only: true,
                 q: 'search index=_internal earliest=-15m || stats count',
             });
-            await fetch(`${createRESTURL('search/parser')}?${search}`, defaultFetchInit)
+            await fetch(`${createRESTURL('search/parser')}?${qs}`, defaultFetchInit)
                 .then(handleResponse(200))
                 .then((data) => {
-                    setValidSearch({ valid: true, data });
                     return { valid: true, data };
                 })
                 .catch((res) =>
@@ -38,16 +31,17 @@ function Fetch(props) {
                         } else {
                             setFoundError(defaultError);
                         }
-                        const errorMessage = foundError ? foundError.text : defaultError;
                     })
                 );
         }
 
-        parseSearch(qs);
+        parseSearch();
     }, []);
 
     return (
         <div style={{ vericalAlign: 'top' }}>
+            <Heading level={1}>Fetch</Heading>
+            <hr />
             <Heading level={3}>Default Fetch Headers</Heading>
             <JSONTree json={defaultFetchInit}></JSONTree>
             <Heading level={3}>Example of findErrorMessage function:</Heading>

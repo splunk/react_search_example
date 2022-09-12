@@ -9,13 +9,10 @@ import URL from './URL';
 import Themes from './Themes';
 import SavedSearch from './SavedSearch';
 import Fetch from './Fetch';
+import Search from './Search';
 function Layout() {
-    const [selectedComponent, setSelectedComponent] = useState(<></>);
+    const [selectedComponent, setSelectedComponent] = useState(<Boolean />);
 
-    function switchHome(e) {
-        e.preventDefault();
-        setSelectedComponent(<h1>Home</h1>);
-    }
     function switchBoolean(e) {
         e.preventDefault();
         setSelectedComponent(<Boolean />);
@@ -45,18 +42,14 @@ function Layout() {
         e.preventDefault();
         setSelectedComponent(<Fetch />);
     }
+    function switchSearch(e) {
+        e.preventDefault();
+        setSelectedComponent(<Search />);
+    }
     return (
         <SplunkThemeProvider family="enterprise">
             <div className="navigation">
                 <div style={{ textAlign: 'center', padding: '20px' }}>
-                    <Link
-                        className="nav-link"
-                        onClick={(e) => switchHome(e)}
-                        style={{ textAlign: 'center', padding: '20px' }}
-                    >
-                        Home
-                    </Link>
-
                     <Link
                         className="nav-link"
                         onClick={(e) => switchBoolean(e)}
@@ -100,6 +93,13 @@ function Layout() {
                         style={{ textAlign: 'center', padding: '20px' }}
                     >
                         Fetch
+                    </Link>
+                    <Link
+                        className="nav-link"
+                        onClick={(e) => switchSearch(e)}
+                        style={{ textAlign: 'center', padding: '20px' }}
+                    >
+                        Search
                     </Link>
                     <Button
                         label="Splunk UI Docs"

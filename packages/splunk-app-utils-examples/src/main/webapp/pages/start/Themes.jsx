@@ -12,6 +12,8 @@ function Themes() {
     if (theme) {
         return (
             <div style={{ vericalAlign: 'top' }}>
+                <Heading level={1}>Themes</Heading>
+                <hr />
                 <Heading level={3}>Current Theme:</Heading>
                 {theme}
             </div>

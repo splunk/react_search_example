@@ -19,11 +19,11 @@ import {
 } from '@splunk/splunk-utils/config';
 import JSONTree from '@splunk/react-ui/JSONTree';
 
-function Config(props) {
-    //State variables for communication with Splunkd
-
+function Config() {
     return (
         <div style={{ vericalAlign: 'top' }}>
+            <Heading level={1}>Config</Heading>
+            <hr />
             <Heading level={3}>Build Number:</Heading>
             <Heading level={1}>{String(buildNumber)}</Heading>
             <hr />

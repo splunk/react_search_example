@@ -2,10 +2,11 @@ import { normalizeBoolean } from '@splunk/splunk-utils/boolean';
 import Heading from '@splunk/react-ui/Heading';
 import React from 'react';
 
-function Boolean(props) {
-    console.log(props.darkMode);
+function Boolean() {
     return (
         <div style={{ vericalAlign: 'top' }}>
+            <Heading level={1}>Boolean</Heading>
+            <hr />
             <Heading level={1}>{typeof 'true'}: true</Heading>
 
             <Heading level={1}>

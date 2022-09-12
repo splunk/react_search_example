@@ -2,9 +2,11 @@ import Heading from '@splunk/react-ui/Heading';
 import React from 'react';
 import { createURL, createStaticURL, createRESTURL } from '@splunk/splunk-utils/url';
 
-function URL(props) {
+function URL() {
     return (
         <div style={{ vericalAlign: 'top' }}>
+            <Heading level={1}>URL</Heading>
+            <hr />
             <Heading level={3}>Create a URL for Search Jobs:</Heading>
 
             <Heading level={1}>{createURL('app/search/job')}</Heading>

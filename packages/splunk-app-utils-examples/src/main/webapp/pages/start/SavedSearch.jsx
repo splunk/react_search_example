@@ -4,7 +4,7 @@ import { get, getLatest, getHistory, dispatch } from '@splunk/splunk-utils/saved
 import { getData } from '@splunk/splunk-utils/search';
 import JSONTree from '@splunk/react-ui/JSONTree';
 
-function SavedSearch(props) {
+function SavedSearch() {
     const [getResults, setGetResults] = useState({});
     const [getLatestResults, setGetLatestResults] = useState({});
     const [getLatestResultsJobResults, setGetLatestResultsJobResults] = useState({});
@@ -46,6 +46,8 @@ function SavedSearch(props) {
 
     return (
         <div style={{ vericalAlign: 'top' }}>
+            <Heading level={1}>Saved Search</Heading>
+            <hr />
             <Heading level={3}>
                 Makes a GET request to the saved/searches/{savedSearchName} REST API endpoint.
             </Heading>
