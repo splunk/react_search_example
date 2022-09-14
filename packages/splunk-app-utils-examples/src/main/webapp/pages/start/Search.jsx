@@ -17,12 +17,14 @@ import P from '@splunk/react-ui/Paragraph';
 function Search() {
     const [getValidResults, setValidResults] = useState({});
     const [createSearchJobSid, setCreateSearchJobSid] = useState('');
+    const [createSecondSearchJobSid, setCreateSecondSearchJobSid] = useState('');
+
     const [searchBool, setSearchingBool] = useState(false);
     const [searchResultsFields, setSearchResultsFields] = useState();
-    //Columns for Column Chart
     const [searchResultsColumns, setSearchResultsColumns] = useState();
-    //Seconds to Complete for Column Chart
     const [secondsToComplete, setSecondsToComplete] = useState(0);
+    const [batchSearchResults, setBatchSearchResults] = useState();
+
     const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
     const [search] = useState('search index=_internal | stats count');
@@ -43,7 +45,27 @@ function Search() {
                     setCreateSearchJobSid(data.sid);
                 }
             });
+
+        createSearchJob({
+            search: 'search index=_internal | stats count by sourcetype',
+            earliest_time: '-1h',
+            latest_time: 'now',
+        })
+            .then((response) => response)
+            .then((data) => {
+                if (data.sid != '') {
+                    setCreateSecondSearchJobSid(data.sid);
+                }
+            });
     }, []);
+
+    useEffect(() => {
+        if (createSecondSearchJobSid != '' && createSearchJobSid != '') {
+            batchGetSearches([createSearchJobSid, createSecondSearchJobSid]).then((data) => {
+                setBatchSearchResults(data);
+            });
+        }
+    }, [createSearchJobSid, createSecondSearchJobSid]);
 
     useEffect(() => {
         if (createSearchJobSid != '') {
@@ -60,18 +82,14 @@ function Search() {
     async function load(sidJob, completeFunc, fieldsFunc, columnsFunc, setSearchingBool, type) {
         var completeSeconds = 0;
         for (var i = 0; i < 30; i++) {
-            console.log(searchBool);
             if (!searchBool) {
                 fetchData(sidJob, fieldsFunc, columnsFunc, type)
                     .then((data) => {
-                        console.log(data);
                         return data;
                     })
                     .then((sidJob) => {
                         if (sidJob) {
                             completeSeconds = completeSeconds + 1;
-                            console.log(completeSeconds);
-                            console.log(sidJob);
                             setSearchingBool(true);
                             completeFunc(completeSeconds);
                         }
@@ -128,6 +146,13 @@ function Search() {
             <P>Search Job Timer: {secondsToComplete}</P>
             <P>Fields: {searchResultsFields}</P>
             <P>Columns: {searchResultsColumns}</P>
+
+            <Heading level={3}>Get Results from Multiple Search Jobs (batchGetSearches)</Heading>
+
+            <P>Sid #1: {String(createSearchJobSid)}</P>
+            <P>Sid #2: {String(createSecondSearchJobSid)}</P>
+
+            <JSONTree json={batchSearchResults}></JSONTree>
         </div>
     );
 }
