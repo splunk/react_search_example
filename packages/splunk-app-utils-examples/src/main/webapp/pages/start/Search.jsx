@@ -16,10 +16,91 @@ import P from '@splunk/react-ui/Paragraph';
 
 function Search() {
     const [getValidResults, setValidResults] = useState({});
+    const [createSearchJobSid, setCreateSearchJobSid] = useState('');
+    const [searchBool, setSearchingBool] = useState(false);
+    const [searchResultsFields, setSearchResultsFields] = useState();
+    //Columns for Column Chart
+    const [searchResultsColumns, setSearchResultsColumns] = useState();
+    //Seconds to Complete for Column Chart
+    const [secondsToComplete, setSecondsToComplete] = useState(0);
+    const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+
+    const [search] = useState('search index=_internal | stats count');
 
     useEffect(() => {
-        validateSearch('search index=_internal').then((result) => setValidResults(result));
+        //Example of validating a search
+        validateSearch(search).then((result) => setValidResults(result));
+
+        //Example of Creating a Search Job
+        createSearchJob({
+            search: search,
+            earliest_time: '-1h',
+            latest_time: 'now',
+        })
+            .then((response) => response)
+            .then((data) => {
+                if (data.sid != '') {
+                    setCreateSearchJobSid(data.sid);
+                }
+            });
     }, []);
+
+    useEffect(() => {
+        if (createSearchJobSid != '') {
+            load(
+                createSearchJobSid,
+                setSecondsToComplete,
+                setSearchResultsFields,
+                setSearchResultsColumns,
+                setSearchingBool
+            );
+        }
+    }, [createSearchJobSid]);
+
+    async function load(sidJob, completeFunc, fieldsFunc, columnsFunc, setSearchingBool, type) {
+        var completeSeconds = 0;
+        for (var i = 0; i < 30; i++) {
+            console.log(searchBool);
+            if (!searchBool) {
+                fetchData(sidJob, fieldsFunc, columnsFunc, type)
+                    .then((data) => {
+                        console.log(data);
+                        return data;
+                    })
+                    .then((sidJob) => {
+                        if (sidJob) {
+                            completeSeconds = completeSeconds + 1;
+                            console.log(completeSeconds);
+                            console.log(sidJob);
+                            setSearchingBool(true);
+                            completeFunc(completeSeconds);
+                        }
+                    });
+                if (!completeSeconds) {
+                    await timer(1000);
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    const fetchData = async (sidJob, fieldsFunc, columnsFunc) => {
+        //Example of Getting Data from Sid
+        const n = await getData(sidJob, 'results', { output_mode: 'json_cols' })
+            .then((response) => response)
+            .then((data) => {
+                if (data) {
+                    fieldsFunc(data.fields);
+                    columnsFunc(data.columns);
+                }
+                return true;
+            });
+
+        return n;
+    };
 
     return (
         <div style={{ vericalAlign: 'top' }}>
@@ -35,7 +116,18 @@ function Search() {
 
             <Heading level={3}>Strip a Leading Search Command</Heading>
 
-            <P>{stripLeadingSearchCommand('search index=_internal')}</P>
+            <P>{stripLeadingSearchCommand(search)}</P>
+
+            <Heading level={3}>Create a Search Job</Heading>
+
+            <P>Sid: {createSearchJobSid}</P>
+
+            <Heading level={3}>Get Results from Search Job</Heading>
+
+            <P>Search Job Is Done: {String(searchBool)}</P>
+            <P>Search Job Timer: {secondsToComplete}</P>
+            <P>Fields: {searchResultsFields}</P>
+            <P>Columns: {searchResultsColumns}</P>
         </div>
     );
 }
