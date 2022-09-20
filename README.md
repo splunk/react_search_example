@@ -1,96 +1,43 @@
-# Splunk UI Toolkit Example for Search using React JS
+# Contributing to Utilsexamples
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-# License Notice
-Copyright 2022 Splunk, Inc.
+The project contains a variety of packages that are published and versioned collectively. Each package lives in its own 
+directory in the `/packages` directory. Each package is self contained, and defines its dependencies in a package.json file.
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-      https://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+We use [Yarn Workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) and [Lerna](https://github.com/lerna/lerna) for
+managing and publishing multiple packages in the same repository.
 
 
-## Available URL Parameters
+## Getting Started
 
-* username
-* password
-* serverURL
+1. Clone the repo.
+2. Install yarn (>= 1.2) if you haven't already: `npm install --global yarn`.
+3. Run the setup task: `yarn run setup`.
 
-Example URL when running in dev mode:
-http://localhost:3000/?username=admin&password=password&serverURL=https://localhost:8089
+After this step, the following tasks will be available:
 
-## Available Scripts
+* `start` – Run the `start` task for each project
+* `build` – Create a production bundle for all projects
+* `test` – Run unit tests for each project
+* `lint` – Run JS and CSS linters for each project
+* `format` – Run prettier to auto-format `*.js`, `*.jsx` and `*.css` files. This command will overwrite files without 
+asking, `format:verify` won't.
 
-In the project directory, you can run:
+Running `yarn run setup` once is required to enable all other tasks. The command might take a few minutes to finish.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Developer Scripts
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Commands run from the root directory will be applied to all packages. This is handy when working on multiple packages 
+simultaneously. Commands can also be run from individual packages. This may be better for performance and reporting when
+ only working on a single package. All of the packages have similar developer scripts, but not all scripts are implemented 
+ for every package. See the `package.json` of the package in question to see which scripts are available there.
 
-### `npm test`
+For more granular control of development scripts, consider using [Lerna](https://github.com/lerna/lerna) directly.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## Code Formatting
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# Splunk UI Toolkit Example for Search using React JS
+Utilsexamples uses [prettier](https://github.com/prettier/prettier) to ensure consistent code formatting. It is recommended
+ to [add a prettier plugin to your editor/ide](https://github.com/prettier/prettier#editor-integration).

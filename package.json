@@ -1,52 +1,24 @@
 {
-  "name": "outside_auth",
-  "version": "0.1.0",
+  "name": "@splunk/utilsexamples",
+  "license": "UNLICENSED",
   "private": true,
-  "dependencies": {
-    "@splunk/dashboard-core": "^24.9.2",
-    "@splunk/dashboard-utils": "^24.9.2",
-    "@splunk/react-icons": "^3.1.0",
-    "@splunk/react-search": "^4.0.1",
-    "@splunk/react-ui": "^4.12.0",
-    "@splunk/search-job": "^2.0.0",
-    "@splunk/splunk-utils": "^2.2.2",
-    "@splunk/themes": "^0.10.1",
-    "@splunk/visualization-context": "^25.0.0",
-    "@splunk/visualizations": "^25.0.0",
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
-    "http-proxy-middleware": "^2.0.3",
-    "querystring": "^0.2.1",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-router-dom": "^6.2.2",
-    "react-scripts": "5.0.0",
-    "styled-components": "^5.3.3",
-    "web-vitals": "^2.1.2"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "lerna run build",
+    "format": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --write",
+    "format:verify": "git ls-files | grep -E \"\\.(jsx?|css)$\" | xargs prettier --list-different",
+    "lint": "lerna run lint --no-sort",
+    "setup": "yarn && lerna run build",
+    "start": "lerna run start --stream --no-sort --concurrency 100",
+    "test": "lerna run test --stream --no-sort"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "devDependencies": {
+    "lerna": "^2.9.0",
+    "prettier": "^2.0.5"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=8"
   }
 }
