@@ -555,7 +555,7 @@ function App(props) {
             </List.Item>
             <ul>
               <li>
-                <Link to="https://splunkui.splunkeng.com/Packages/splunk-utils">
+                <Link to="https://splunkui.splunk.com/Packages/splunk-utils">
                   Documentation
                 </Link>
               </li>
@@ -567,7 +567,7 @@ function App(props) {
             </List.Item>
             <ul>
               <li>
-                <Link to="https://splunkui.splunkeng.com/Packages/visualizations">
+                <Link to="https://splunkui.splunk.com/Packages/visualizations">
                   Documentation
                 </Link>
               </li>
@@ -579,7 +579,7 @@ function App(props) {
             </List.Item>
             <ul>
               <li>
-                <Link to="https://splunkui.splunkeng.com/Packages/react-ui">
+                <Link to="https://splunkui.splunk.com/Packages/react-ui">
                   Documentation
                 </Link>
               </li>
